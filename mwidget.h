@@ -17,6 +17,7 @@ public:
 private:
     QString GetIp();
     void analyse_data(QStringList list);
+    void ui_Design(QWidget *MWidget);
 private slots:
     void newConnectSlot();
     void listen();
