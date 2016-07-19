@@ -6,7 +6,7 @@
 namespace Ui {
 class MWidget;
 }
-
+class QTcpServer;
 class MWidget : public QWidget
 {
     Q_OBJECT
@@ -14,9 +14,17 @@ class MWidget : public QWidget
 public:
     explicit MWidget(QWidget *parent = 0);
     ~MWidget();
+private:
+    QString GetIp();
+    void analyse_data(QStringList list);
+private slots:
+    void newConnectSlot();
+    void listen();
+    void readMessage();
 
 private:
     Ui::MWidget *ui;
+    QTcpServer *mTcpServer;
 };
 
 #endif // MWIDGET_H
