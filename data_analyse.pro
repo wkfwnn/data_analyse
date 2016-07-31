@@ -13,8 +13,17 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mwidget.cpp
+        mwidget.cpp \
+    dll.cpp \
+    config.cpp
 
-HEADERS  += mwidget.h
+HEADERS  += mwidget.h \
+    dll.h \
+    config.h
 
 FORMS    += mwidget.ui
+
+RESOURCES += \
+    resource.qrc
+
+DISTFILES +=

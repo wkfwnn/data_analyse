@@ -1,6 +1,6 @@
 #include "mwidget.h"
 #include "ui_mwidget.h"
-#include "QLibrary"
+#include "dll.h"
 #include "qdebug.h"
 #include "QString"
 #include "QHostInfo"
@@ -12,9 +12,8 @@
 #include "QGridLayout"
 #include "QStackedWidget"
 #include "QVBoxLayout"
-
-
-typedef int ( *pcom_open)(); //定义函数指针
+#include "config.h"
+#include "QHash"
 
 MWidget::MWidget(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +25,13 @@ MWidget::MWidget(QWidget *parent) :
     mTcpServer = new QTcpServer(this);
     connect(mTcpServer,SIGNAL(newConnection()),this,SLOT(newConnectSlot()));
     this->listen();
+    mDll = new Dll();
+    mConfig = new Config(this);
+    mConfig->loadConfigData(&mHash);
+    mDll->loadLibrary(mDll);
+    mDll->initScreen(mHash);
+
+
 }
 
 MWidget::~MWidget()
@@ -42,7 +48,6 @@ QString MWidget::GetIp()
       if(address.protocol()==QAbstractSocket::IPv4Protocol)
         qDebug()<<address.toString(); //输出IPV4的地址
         return address.toString();
-        //return "127.0.0.1";
     }
     return 0;
 
@@ -64,17 +69,18 @@ void MWidget::analyse_data(QStringList list)
      else if(str.contains("-01-Rtd=")){
          result = str.left(str.indexOf(','));
          result = result.mid(result.indexOf('=')+1);
-         qDebug()<<result;
+         ui->pushButton_3->setText(QString("烟尘\n")+ result);
      }
      else if(str.contains("-02-Rtd=")){
          result = str.left(str.indexOf(','));
          result = result.mid(result.indexOf('=')+1);
          qDebug()<<result;
+         ui->so2Button->setText(QString("SO2\n")+result);
      }
      else if(str.contains("-03-Rtd=")){
          result = str.left(str.indexOf(','));
          result = result.mid(result.indexOf('=')+1);
-         qDebug()<<result;
+         ui->No2Button->setText(QString("NOx\n")+result);
      }
 
     }
@@ -82,25 +88,18 @@ void MWidget::analyse_data(QStringList list)
 
 void MWidget::ui_Design(QWidget *MWidget)
 {
-    QListWidget *listWidget = new QListWidget(MWidget);
-    QPushButton *dataButton = new QPushButton(listWidget);
-    dataButton->setText("实时数据");
-    QPushButton *paraButton = new QPushButton(listWidget);
-    paraButton->setText("参数设置");
-    QPushButton *otherButton = new QPushButton(listWidget);
-    otherButton->setText("其他");
 
-    QGridLayout *layout = new QGridLayout(listWidget);
-    listWidget->setPalette(QApplication::palette("QWidget"));
-    layout->addWidget(dataButton);
-    layout->addWidget(paraButton);
-    layout->addWidget(otherButton);
     //QStackedWidget *stackWiddget = new QStackedWidget(MWidget);
 
-    QHBoxLayout *layout1 = new QHBoxLayout(MWidget);
-    layout1->addWidget(listWidget);
-    layout1->addWidget(ui->stackedWidget);
-    layout1->addStretch(1);
+
+    ui->treeWidget->setColumnCount(1);
+    ui->treeWidget->setHeaderLabel(tr("导航栏"));
+    QTreeWidgetItem *imageItem1 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("实时数据")));
+    imageItem1->setIcon(0,QIcon("xxx.png"));
+    QTreeWidgetItem *imageItem2 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("参数设置")));
+    QTreeWidgetItem *imageItem3 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("帮助")));
+    this->setFixedSize(1366,768);
+    ui->stackedWidget->setCurrentIndex(0);
 
 }
 
@@ -128,4 +127,22 @@ void MWidget::readMessage()
     qDebug()<<Message;
     list = Message.split(';');
     analyse_data(list);
+}
+
+void MWidget::on_treeWidget_clicked(const QModelIndex &index)
+{
+    switch(index.row())
+    {
+     case 0:ui->stackedWidget->setCurrentIndex(0);
+        break;
+     case 1:ui->stackedWidget->setCurrentIndex(1);
+        break;
+     case 2:ui->stackedWidget->setCurrentIndex(2);
+       break;
+    }
+}
+
+void MWidget::on_saveButton_clicked()
+{
+
 }
