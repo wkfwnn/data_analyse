@@ -11,10 +11,16 @@ Config::Config(QWidget *parent)
 
 int Config::loadConfigData(QHash<QString, QString> *hashData)
 {
+    QString line;
+    QStringList list;
     QFile data("config.dat");
     if (data.open(QFile::ReadOnly)) {
         QTextStream out(&data);
-         //qDebug()<<out;
+         while( !out.atEnd()) {
+            line = out.readLine();
+            list = line.split(":");
+            hashData->insert(list.at(0),list.at(1));
+         }
         return 0;
     }
     else{

@@ -14,11 +14,14 @@
 #include "QVBoxLayout"
 #include "config.h"
 #include "QHash"
+#include "QFile"
+#include "QMessageBox"
 
 MWidget::MWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MWidget)
 {
+    int ret = 0;
     ui->setupUi(this);
     this->ui_Design(this);
     this->GetIp();
@@ -26,11 +29,22 @@ MWidget::MWidget(QWidget *parent) :
     connect(mTcpServer,SIGNAL(newConnection()),this,SLOT(newConnectSlot()));
     this->listen();
     mDll = new Dll();
-    mConfig = new Config(this);
-    mConfig->loadConfigData(&mHash);
     mDll->loadLibrary(mDll);
-    mDll->initScreen(mHash);
+    ret = mDll->initScreen();
 
+    mConfig = new Config(this);
+    ret = mConfig->loadConfigData(&mHash);
+    if(ret == 0){
+        ui->spinBox->setValue(mHash.value(QString("screen_num")).toInt());
+        ui->spinBox_2->setValue(mHash.value(QString("screen_height")).toInt());
+        ui->spinBox_3->setValue(mHash.value(QString("screen_width")).toInt());
+        ui->lineEdit->setText(mHash.value(QString("ip")));
+        ui->lineEdit_2->setText(mHash.value(QString("ip_port")));
+        //mDll->loadLibrary(mDll);
+        //ret = mDll->initScreen();
+
+    }
+    qDebug()<<ret;
 
 }
 
@@ -82,16 +96,11 @@ void MWidget::analyse_data(QStringList list)
          result = result.mid(result.indexOf('=')+1);
          ui->No2Button->setText(QString("NOx\n")+result);
      }
-
     }
 }
 
 void MWidget::ui_Design(QWidget *MWidget)
 {
-
-    //QStackedWidget *stackWiddget = new QStackedWidget(MWidget);
-
-
     ui->treeWidget->setColumnCount(1);
     ui->treeWidget->setHeaderLabel(tr("导航栏"));
     QTreeWidgetItem *imageItem1 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("实时数据")));
@@ -144,5 +153,31 @@ void MWidget::on_treeWidget_clicked(const QModelIndex &index)
 
 void MWidget::on_saveButton_clicked()
 {
+    QHash<QString,QString>data;
+    data.insert(QString("screen_num"),QString::number(ui->spinBox->value()));
+    data.insert(QString("screen_width"),QString::number(ui->spinBox_2->value()));
+    data.insert(QString("screen_height"),QString::number(ui->spinBox_3->value()));
+    data.insert(QString("ip"),ui->lineEdit->text());
+    data.insert(QString("ip_port"),ui->lineEdit_2->text());
+
+    QFile file("config.dat");
+    if (file.open(QFile::WriteOnly)){
+        QTextStream out(&file);
+        QHashIterator<QString, QString> i(data);
+          while (i.hasNext()) {
+              i.next();
+              out << i.key() << ":" << i.value() << endl;
+          }
+        out.flush();
+        file.close();
+        mHash = data;
+        ui->spinBox->setValue(mHash.value(QString("screen_num")).toInt());
+        ui->spinBox_2->setValue(mHash.value(QString("screen_height")).toInt());
+        ui->spinBox_3->setValue(mHash.value(QString("screen_width")).toInt());
+        ui->lineEdit->setText(mHash.value(QString("ip")));
+        ui->lineEdit_2->setText(mHash.value(QString("ip_port")));
+    }else{
+        QMessageBox::warning(this,QString("警告"),QString("数据未保存！"));
+    }
 
 }

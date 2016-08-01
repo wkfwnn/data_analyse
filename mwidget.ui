@@ -1038,7 +1038,7 @@
         <property name="title">
          <string>屏参数配置</string>
         </property>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -1099,7 +1099,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -1125,7 +1125,7 @@
            <widget class="QComboBox" name="comboBox_2">
             <item>
              <property name="text">
-              <string>网路通讯</string>
+              <string>网络通讯</string>
              </property>
             </item>
            </widget>
@@ -1190,7 +1190,7 @@
           <string>ip地址</string>
          </property>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -1226,8 +1226,8 @@
        <widget class="QPushButton" name="saveButton">
         <property name="geometry">
          <rect>
-          <x>970</x>
-          <y>560</y>
+          <x>920</x>
+          <y>500</y>
           <width>131</width>
           <height>51</height>
          </rect>
