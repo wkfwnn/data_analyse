@@ -40,8 +40,6 @@ MWidget::MWidget(QWidget *parent) :
         ui->spinBox_3->setValue(mHash.value(QString("screen_width")).toInt());
         ui->lineEdit->setText(mHash.value(QString("ip")));
         ui->lineEdit_2->setText(mHash.value(QString("ip_port")));
-        //mDll->loadLibrary(mDll);
-        //ret = mDll->initScreen();
 
     }
     qDebug()<<ret;

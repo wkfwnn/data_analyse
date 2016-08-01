@@ -36,12 +36,4 @@ public:
   Dll();
   void loadLibrary(Dll *);
   int  initScreen();
-  FUN1 mInitialize;
-  FUN1 mUninitialize;
-  FUN2 mAddScreen_Dynamic;
-  FUN3 mAddScreenDynamicArea;
-  FUN4 mAddScreenDynamicAreaFile;
-  FUN5 mSendDynamicAreaInfoCommand;
-  FUN6 mAddScreenDynamicAreaText;
-
 };
