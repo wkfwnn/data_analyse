@@ -112,12 +112,13 @@ int Dll::initScreen(int screen_num,int screen_width, int screen_height,
 int Dll::initScreen()
 {
     int tmp;
-    string ip = "192.168.33.40";
-    string null = "";
-    string path = "E:\\wkf\\common.dat";
+    //string ip = "192.168.33.40";
+
+    //string null = "";
+    //string path = "E:\\wkf\\common.dat";
 /*step 1*/
     tmp = this->mInitialize();
-    qDebug()<<tmp;
+    qDebug()<<"step 1";
 #if 1
 /*step 2*/
     tmp = this->mAddScreen_Dynamic(
@@ -130,25 +131,26 @@ int Dll::initScreen()
                 2,
                 SCREEN_COMM,
                 SCREEN_BAUD,
-                ip,
+                "192.45.34.23",
                 9000,
                 0,
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 1000,
-                null,
-                null,
-                path
+                "",
+                "",
+                "haha.dat"
                 );
+    qDebug()<<"step 2";
 #endif
 
-   qDebug()<<"nidaye";
+
 #if 1
 /*step 3*/
    tmp  = this->mAddScreenDynamicArea(
                     1,
-                    0,
+                    1,
                     RUN_MODE_CYCLE_SHOW,
                     10,
                     1,
@@ -163,24 +165,23 @@ int Dll::initScreen()
                     1
                     );
 #endif
-    qDebug()<<"nierdaye";
+    qDebug()<<"step 3";
 
-
-/*step 4*/
-    tmp = this->mAddScreenDynamicAreaText(
-                1,
-                0,
-                "test",
-                0,
-                "宋体",
-                12,
-                0,
-                255,
-                2,
-                8,
-                5
+    tmp = this->mAddScreenDynamicAreaFile(
+                1, // 显示屏屏号
+                1,// 动态区域编号
+                "Test.txt", // 添加的信息文件名称,
+                1,// 文字信息是否单行显示；0：多行显示；1：单行显示
+                "隶书",// 字体
+                12, // 字体大小
+                0, // 文字信息是否粗体显示；0：正常；1：粗体显示；
+                255,// 文字信息显示颜色
+                4, // 动态区域信息运行显示特技，当前为静止显示，其他显示见函数声明
+                8,// 运行速度
+                0// /保留时间
                 );
-    qDebug()<<"ni3daye";
-    return tmp;
+     qDebug()<<"step 4";
+     return tmp;
 
 }
+
