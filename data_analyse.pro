@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mwidget.cpp \
     dll.cpp \
-    config.cpp
+    config.cpp \
+    updateledthread.cpp
 
 HEADERS  += mwidget.h \
     dll.h \
-    config.h
+    config.h \
+    updateledthread.h
 
 FORMS    += mwidget.ui
 

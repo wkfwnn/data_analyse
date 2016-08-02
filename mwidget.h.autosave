@@ -53,6 +53,7 @@ private:
     Dll *mDll;
     Config *mConfig;
     QHash<QString, QString> mHash;
+    UpdateLedThread mThread;
 
 };
 

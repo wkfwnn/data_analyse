@@ -18,6 +18,7 @@
 #include "QMessageBox"
 #include "QSerialPort"
 #include "QTimer"
+#include "updateledthread.h"
 
 
 
@@ -39,6 +40,7 @@ MWidget::MWidget(QWidget *parent) :
     this->serportInit();
 #endif
 
+    mThread = new UpdateLedThread();
 
     mDll = new Dll();
     QTimer::singleShot(1000, this, SLOT(loadDll()));
