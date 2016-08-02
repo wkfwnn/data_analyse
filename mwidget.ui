@@ -1236,6 +1236,56 @@
          <string>保存</string>
         </property>
        </widget>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>130</y>
+          <width>921</width>
+          <height>80</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>在线仪配置</string>
+        </property>
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>30</y>
+           <width>761</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>串口号</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_3"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>波特率</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_4"/>
+          </item>
+         </layout>
+        </widget>
+        <zorder>label_11</zorder>
+        <zorder>label_12</zorder>
+        <zorder>lineEdit</zorder>
+        <zorder>lineEdit_3</zorder>
+        <zorder>lineEdit_4</zorder>
+       </widget>
       </widget>
       <widget class="QWidget" name="page_3">
        <widget class="QTextEdit" name="textEdit">

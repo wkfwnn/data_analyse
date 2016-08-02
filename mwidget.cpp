@@ -16,6 +16,9 @@
 #include "QHash"
 #include "QFile"
 #include "QMessageBox"
+#include "QSerialPort"
+
+
 
 MWidget::MWidget(QWidget *parent) :
     QWidget(parent),
@@ -23,11 +26,19 @@ MWidget::MWidget(QWidget *parent) :
 {
     int ret = 0;
     ui->setupUi(this);
-    this->ui_Design(this);
+    this->ui_Design();
+#if (USE_NET)
     this->GetIp();
     mTcpServer = new QTcpServer(this);
     connect(mTcpServer,SIGNAL(newConnection()),this,SLOT(newConnectSlot()));
     this->listen();
+#else
+    mPort = new QSerialPort(this);
+    connect(mPort, &QIODevice::readyRead, this, &MWidget::readData);
+    this->serportInit();
+#endif
+
+
     mDll = new Dll();
     mDll->loadLibrary(mDll);
     ret = mDll->initScreen();
@@ -49,20 +60,6 @@ MWidget::MWidget(QWidget *parent) :
 MWidget::~MWidget()
 {
     delete ui;
-}
-
-QString MWidget::GetIp()
-{
-    QString localHostName = QHostInfo::localHostName();
-    QHostInfo info = QHostInfo::fromName(localHostName);
-    foreach(QHostAddress address,info.addresses())
-    {
-      if(address.protocol()==QAbstractSocket::IPv4Protocol)
-        qDebug()<<address.toString(); //输出IPV4的地址
-        return address.toString();
-    }
-    return 0;
-
 }
 
 void MWidget::analyse_data(QStringList list)
@@ -97,7 +94,7 @@ void MWidget::analyse_data(QStringList list)
     }
 }
 
-void MWidget::ui_Design(QWidget *MWidget)
+void MWidget::ui_Design()
 {
     ui->treeWidget->setColumnCount(1);
     ui->treeWidget->setHeaderLabel(tr("导航栏"));
@@ -108,32 +105,6 @@ void MWidget::ui_Design(QWidget *MWidget)
     this->setFixedSize(1366,768);
     ui->stackedWidget->setCurrentIndex(0);
 
-}
-
-void MWidget::newConnectSlot()
-{
-    QTcpSocket *tcp = mTcpServer->nextPendingConnection();
-    connect(tcp,SIGNAL(readyRead()),this,SLOT(readMessage()));
-}
-
-void MWidget::listen()
-{
-    if(mTcpServer->listen(QHostAddress::Any, 8000)){
-        qDebug()<<"listen ok";
-    }else{
-        qDebug()<<"listen error";
-    }
-}
-
-void MWidget::readMessage()
-{
-    QString Message;
-    QStringList list;
-    QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
-    Message.prepend(socket->readAll());
-    qDebug()<<Message;
-    list = Message.split(';');
-    analyse_data(list);
 }
 
 void MWidget::on_treeWidget_clicked(const QModelIndex &index)
@@ -179,3 +150,89 @@ void MWidget::on_saveButton_clicked()
     }
 
 }
+
+#if (USE_NET)
+
+QString MWidget::GetIp()
+{
+    QString localHostName = QHostInfo::localHostName();
+    QHostInfo info = QHostInfo::fromName(localHostName);
+    foreach(QHostAddress address,info.addresses())
+    {
+      if(address.protocol()==QAbstractSocket::IPv4Protocol)
+        qDebug()<<address.toString(); //输出IPV4的地址
+        return address.toString();
+    }
+    return 0;
+
+}
+void MWidget::newConnectSlot()
+{
+    QTcpSocket *tcp = mTcpServer->nextPendingConnection();
+    connect(tcp,SIGNAL(readyRead()),this,SLOT(readMessage()));
+}
+
+void MWidget::readMessage()
+{
+    QString Message;
+    QStringList list;
+    QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
+    Message.prepend(socket->readAll());
+    qDebug()<<Message;
+    list = Message.split(';');
+    analyse_data(list);
+}
+
+
+void MWidget::listen()
+{
+    if(mTcpServer->listen(QHostAddress::Any, 8000)){
+        qDebug()<<"listen ok";
+    }else{
+        qDebug()<<"listen error";
+    }
+}
+
+#else
+void MWidget::readData()
+{
+  QStringList list;
+  QString message;
+  QByteArray data = mPort->readAll();
+  message = QString(data);
+  list = message.split(";");
+  analyse_data(list);
+}
+
+void MWidget::serportInit()
+{
+    QStringList list;
+    QString baudRate;
+    QString line;
+    QFile data("serport.txt");
+    if (data.open(QFile::ReadOnly)) {
+        QTextStream out(&data);
+        line = out.readLine();
+        list = line.split(",");
+    }else{
+        QMessageBox::warning(this,QString("警告"),QString("软件文件缺失"));
+        return;
+    }
+    baudRate = list.at(1);
+    ui->lineEdit_3->setText(list.at(0));
+    ui->lineEdit_4->setText(list.at(1));
+
+    mPort->setPortName(list.at(0));
+    mPort->setBaudRate(baudRate.toInt());
+    mPort->setDataBits(QSerialPort::Data8);
+    mPort->setParity(QSerialPort::NoParity);
+    mPort->setStopBits(QSerialPort::OneStop);
+    mPort->setFlowControl(QSerialPort::NoFlowControl);
+     if (mPort->open(QIODevice::ReadWrite)) {
+
+     }else{
+
+        QMessageBox::critical(this, tr("错误"), QString("无法打开串口"));
+     }
+}
+#endif
