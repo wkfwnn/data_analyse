@@ -17,6 +17,7 @@
 #include "QFile"
 #include "QMessageBox"
 #include "QSerialPort"
+#include "QTimer"
 
 
 
@@ -40,8 +41,7 @@ MWidget::MWidget(QWidget *parent) :
 
 
     mDll = new Dll();
-    mDll->loadLibrary(mDll);
-    ret = mDll->initScreen();
+    QTimer::singleShot(1000, this, SLOT(loadDll()));
 
     mConfig = new Config(this);
     ret = mConfig->loadConfigData(&mHash);
@@ -51,10 +51,7 @@ MWidget::MWidget(QWidget *parent) :
         ui->spinBox_3->setValue(mHash.value(QString("screen_width")).toInt());
         ui->lineEdit->setText(mHash.value(QString("ip")));
         ui->lineEdit_2->setText(mHash.value(QString("ip_port")));
-
     }
-    qDebug()<<ret;
-
 }
 
 MWidget::~MWidget()
@@ -99,7 +96,6 @@ void MWidget::ui_Design()
     ui->treeWidget->setColumnCount(1);
     ui->treeWidget->setHeaderLabel(tr("导航栏"));
     QTreeWidgetItem *imageItem1 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("实时数据")));
-    imageItem1->setIcon(0,QIcon("xxx.png"));
     QTreeWidgetItem *imageItem2 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("参数设置")));
     QTreeWidgetItem *imageItem3 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("帮助")));
     this->setFixedSize(1366,768);
@@ -124,8 +120,8 @@ void MWidget::on_saveButton_clicked()
 {
     QHash<QString,QString>data;
     data.insert(QString("screen_num"),QString::number(ui->spinBox->value()));
-    data.insert(QString("screen_width"),QString::number(ui->spinBox_2->value()));
-    data.insert(QString("screen_height"),QString::number(ui->spinBox_3->value()));
+    data.insert(QString("screen_width"),QString::number(ui->spinBox_3->value()));
+    data.insert(QString("screen_height"),QString::number(ui->spinBox_2->value()));
     data.insert(QString("ip"),ui->lineEdit->text());
     data.insert(QString("ip_port"),ui->lineEdit_2->text());
 
@@ -204,6 +200,12 @@ void MWidget::readData()
   analyse_data(list);
 }
 
+void MWidget::loadDll()
+{
+    mDll->loadLibrary(ui->spinBox_3->value(),ui->spinBox_2->value(),
+                            ui->lineEdit_2->text().toInt(),ui->lineEdit->text(),ui->spinBox->value());
+}
+
 void MWidget::serportInit()
 {
     QStringList list;
@@ -231,7 +233,6 @@ void MWidget::serportInit()
      if (mPort->open(QIODevice::ReadWrite)) {
 
      }else{
-
         QMessageBox::critical(this, tr("错误"), QString("无法打开串口"));
      }
 }

@@ -1,8 +1,6 @@
 #include "QHash"
 #include "QWidget"
-//#include "const char*"
 
-//using   namespace  std;
 
 typedef int(*FUN1)();
 typedef int(*FUN2)(int nControlType,int nScreenNo,int nSendMode,int nWidth,int nHeight,int nScreenType,int nPixelMode,\
@@ -26,6 +24,7 @@ typedef int (*FUN6)(int nScreenNo, int nDYAreaID,
                      int nBold, int nFontColor, int nStunt, int nRunSpeed,
                      int nShowTime);
 
+typedef int (*FUN7)(int nScreenNo, int nDYAreaID,int nFileOrd);
 
 
 
@@ -34,6 +33,6 @@ class Dll
 
 public:
   Dll();
-  void loadLibrary(Dll *);
-  int  initScreen();
+  void loadLibrary(int screen_width, int screen_height, int ip_port, QString ip, int screen_num);
+  void updateText();
 };

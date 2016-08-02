@@ -9,7 +9,7 @@ Config::Config(QWidget *parent)
   mParent = parent;
 }
 
-int Config::loadConfigData(QHash<QString, QString> *hashData)
+int Config::loadConfigData(QHash<QString,QString> *hashData)
 {
     QString line;
     QStringList list;
