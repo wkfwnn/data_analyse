@@ -16,12 +16,12 @@ SOURCES += main.cpp\
         mwidget.cpp \
     dll.cpp \
     config.cpp \
-    updateledthread.cpp
+    updatescreenthread.cpp
 
 HEADERS  += mwidget.h \
     dll.h \
     config.h \
-    updateledthread.h
+    updatescreenthread.h
 
 FORMS    += mwidget.ui
 

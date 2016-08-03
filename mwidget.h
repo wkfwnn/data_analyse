@@ -3,9 +3,11 @@
 
 #include <QWidget>
 #include "QHash"
-#include "updateledthread.h"
 
 #define USE_NET    0
+
+
+
 
 namespace Ui {
 class MWidget;
@@ -14,6 +16,7 @@ class QTcpServer;
 class Dll;
 class Config;
 class QSerialPort;
+class UpdateScreenThread;
 class MWidget : public QWidget
 {
     Q_OBJECT
@@ -53,6 +56,7 @@ private:
     Dll *mDll;
     Config *mConfig;
     QHash<QString, QString> mHash;
+    UpdateScreenThread *mThread;
 
 };
 

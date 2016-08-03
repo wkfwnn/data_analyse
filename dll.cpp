@@ -27,7 +27,6 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
 
  if (mLib->load()){
      qDebug()<<"load ok";
-
      FUN1 Initialize = (FUN1)mLib->resolve("Initialize");
      if(Initialize)
          tmp = Initialize();
@@ -54,9 +53,9 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
                       1000,
                       "",
                       "",
-                      "E:\\wkf\\common.dat"
+                      "G:\\wkf\\application\\common.txt"
                       );
-      qDebug() <<"tmp1" << tmp;
+     qDebug() <<"tmp1" << tmp;
      FUN3 AddScreenDynamicArea =  (FUN3)mLib->resolve("AddScreenDynamicArea");
      if(AddScreenDynamicArea)
          tmp = AddScreenDynamicArea(
@@ -77,7 +76,7 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
                      1// 移动步长
                      );
      qDebug() <<"tmp2" << tmp;
-#if 0
+#if 1
     FUN4 AddScreenDynamicAreaFile = (FUN4)mLib->resolve("AddScreenDynamicAreaFile");
     if(AddScreenDynamicAreaFile)
         tmp = AddScreenDynamicAreaFile(
@@ -93,7 +92,7 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
                     8,// 运行速度
                     0// /保留时间
                     );
-#endif
+#else
 
     FUN6 AddScreenDynamicAreaText = (FUN6)mLib->resolve("AddScreenDynamicAreaText");
     if(AddScreenDynamicAreaText){
@@ -112,7 +111,7 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
                    );
     }
 
-
+#endif
     qDebug() <<"tmp3" << tmp;
 
     //FUN5 mSendDynamicAreaInfoCommand = (FUN5)mLib->resolve("SendDynamicAreaInfoCommand");

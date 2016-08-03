@@ -18,8 +18,7 @@
 #include "QMessageBox"
 #include "QSerialPort"
 #include "QTimer"
-#include "updateledthread.h"
-
+#include "updatescreenthread.h"
 
 
 MWidget::MWidget(QWidget *parent) :
@@ -40,7 +39,7 @@ MWidget::MWidget(QWidget *parent) :
     this->serportInit();
 #endif
 
-    mThread = new UpdateLedThread();
+
 
     mDll = new Dll();
     QTimer::singleShot(1000, this, SLOT(loadDll()));
@@ -54,6 +53,7 @@ MWidget::MWidget(QWidget *parent) :
         ui->lineEdit->setText(mHash.value(QString("ip")));
         ui->lineEdit_2->setText(mHash.value(QString("ip_port")));
     }
+    mThread = new UpdateScreenThread(ui->spinBox->value());
 }
 
 MWidget::~MWidget()
@@ -91,6 +91,14 @@ void MWidget::analyse_data(QStringList list)
          ui->No2Button->setText(QString("NOx\n")+result);
      }
     }
+
+    QFile file("Test.txt");
+    if (file.open(QFile::WriteOnly)) {
+        QTextStream out(&file);
+        out << ui->No2Button->text().remove("\n") << " "<< ui->so2Button->text().remove("\n")<< " "
+            <<ui->pushButton_3->text().remove("\n")<<endl;
+    }
+    mThread->start();
 }
 
 void MWidget::ui_Design()
