@@ -74,18 +74,18 @@ void MWidget::analyse_data(QStringList list)
          result = str.mid(str.indexOf("DataTime=")+QString("DataTime=").length());
          qDebug()<<result;
      }
-     else if(str.contains("-01-Rtd=")){
+     else if(str.contains("-01-ZsRtd=")){
          result = str.left(str.indexOf(','));
          result = result.mid(result.indexOf('=')+1);
          ui->pushButton_3->setText(QString("烟尘\n")+ result);
      }
-     else if(str.contains("-02-Rtd=")){
+     else if(str.contains("-02-ZsRtd=")){
          result = str.left(str.indexOf(','));
          result = result.mid(result.indexOf('=')+1);
          qDebug()<<result;
          ui->so2Button->setText(QString("SO2\n")+result);
      }
-     else if(str.contains("-03-Rtd=")){
+     else if(str.contains("-03-ZsRtd=")){
          result = str.left(str.indexOf(','));
          result = result.mid(result.indexOf('=')+1);
          ui->No2Button->setText(QString("NOx\n")+result);
