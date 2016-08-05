@@ -1116,7 +1116,7 @@
            <widget class="QComboBox" name="comboBox">
             <item>
              <property name="text">
-              <string>BX-5E1</string>
+              <string>BX-5M4</string>
              </property>
             </item>
            </widget>
@@ -1248,7 +1248,7 @@
         <property name="title">
          <string>在线仪配置</string>
         </property>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -1280,11 +1280,6 @@
           </item>
          </layout>
         </widget>
-        <zorder>label_11</zorder>
-        <zorder>label_12</zorder>
-        <zorder>lineEdit</zorder>
-        <zorder>lineEdit_3</zorder>
-        <zorder>lineEdit_4</zorder>
        </widget>
       </widget>
       <widget class="QWidget" name="page_3">
