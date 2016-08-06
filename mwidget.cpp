@@ -75,19 +75,19 @@ void MWidget::analyse_data(QStringList list)
          qDebug()<<result;
      }
      else if(str.contains("01-ZsRtd=")){
-         result = str.left(str.indexOf(','));
-         result = result.mid(result.indexOf('=')+1);
+         result = str.left(str.lastIndexOf(','));
+         result = result.mid(result.lastIndexOf('=')+1);
          ui->pushButton_3->setText(QString("烟尘\n")+ result);
      }
      else if(str.contains("02-ZsRtd=")){
-         result = str.left(str.indexOf(','));
-         result = result.mid(result.indexOf('=')+1);
+         result = str.left(str.lastIndexOf(','));
+         result = result.mid(result.lastIndexOf('=')+1);
          qDebug()<<result;
          ui->so2Button->setText(QString("SO2\n")+result);
      }
      else if(str.contains("03-ZsRtd=")){
-         result = str.left(str.indexOf(','));
-         result = result.mid(result.indexOf('=')+1);
+         result = str.left(str.lastIndexOf(','));
+         result = result.mid(result.lastIndexOf('=')+1);
          ui->No2Button->setText(QString("NOx\n")+result);
      }
     }
