@@ -19,6 +19,7 @@
 #include "QSerialPort"
 #include "QTimer"
 #include "updatescreenthread.h"
+#include "QDateTime"
 
 
 MWidget::MWidget(QWidget *parent) :
@@ -78,25 +79,37 @@ void MWidget::analyse_data(QStringList list)
          result = str.left(str.lastIndexOf(','));
          result = result.mid(result.lastIndexOf('=')+1);
          ui->pushButton_3->setText(QString("烟尘\n")+ result);
+         mYanchen  = result;
      }
      else if(str.contains("02-ZsRtd=")){
          result = str.left(str.lastIndexOf(','));
          result = result.mid(result.lastIndexOf('=')+1);
          qDebug()<<result;
          ui->so2Button->setText(QString("SO2\n")+result);
+         mSO2  = result;
      }
      else if(str.contains("03-ZsRtd=")){
          result = str.left(str.lastIndexOf(','));
          result = result.mid(result.lastIndexOf('=')+1);
          ui->No2Button->setText(QString("NOx\n")+result);
+         mNOx = result;
      }
     }
+
+    QDateTime current_date_time = QDateTime::currentDateTime();
+    QString current_date = current_date_time.toString("yyyy年MM月dd日  ddd   hh时mm分ss秒");
+    qDebug()<<current_date;
 
     QFile file("Test.txt");
     if (file.open(QFile::WriteOnly)) {
         QTextStream out(&file);
-        out << ui->No2Button->text().remove("\n") << " "<< ui->so2Button->text().remove("\n")<< " "
-            <<ui->pushButton_3->text().remove("\n")<<endl;
+        out << current_date                                <<"\r\n"
+            << QString("         折  算(mg/m3)       标准") << "\r\n"
+            << QString("SO2")<<QString("      ") << mSO2 << QString("                < 100\r\n")
+            << QString("NOx")<<QString("      ") << mNOx << QString("              < 100\r\n")
+            << QString("烟尘")<<QString("     ") << mYanchen << QString("                < 10\r\n");
+        out.flush();
+        file.close();
     }
     mThread->start();
 }

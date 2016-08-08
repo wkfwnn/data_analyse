@@ -4,7 +4,7 @@
 
 typedef int(*FUN1)();
 typedef int(*FUN2)(int nControlType,int nScreenNo,int nSendMode,int nWidth,int nHeight,int nScreenType,int nPixelMode,\
-                  const char* pCom ,int nBaud,const char* pSocketIP,int nSocketPort,int nServerMode,const char* pBarcode,\
+                  const char* pCom ,int nBaud,const char* pSocketIP,int nSocketPort,int nStaticIPMode, int nServerMode,const char* pBarcode,\
                    const char* pNetworkID ,const char* pServerIP,int nServerPort,const char* pServerAccessUser,const char* pServerAccessPassword,const char* pCommandDataFile);
 typedef int(*FUN3)(int nScreenNo, int nDYAreaID,
                    int nRunMode, int nTimeOut, int nAllProRelate,

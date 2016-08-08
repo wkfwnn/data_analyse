@@ -3,7 +3,7 @@
 #include "qdebug.h"
 #include "mwidget.h"
 
-#define CONTROLLER_BX_5E1      0x154
+#define CONTROLLER_BX_5E1      0x0154
 #define SEND_MODE_NETWORK      2
 #define SCREEN_COMM            "COM1"
 #define SCREEN_BAUD            57600
@@ -25,6 +25,8 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
  const char* p_ip = str.c_str();
  QLibrary *mLib = new QLibrary(QString("LedDynamicArea.dll"));
 
+ qDebug() << screen_num << screen_width << screen_height;
+ qDebug() << p_ip << ip_port;
  if (mLib->load()){
      qDebug()<<"load ok";
      FUN1 Initialize = (FUN1)mLib->resolve("Initialize");
@@ -46,6 +48,7 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
                       SCREEN_BAUD,
                       p_ip,
                       ip_port,
+                      0,
                       0,
                       "",
                       "",
@@ -83,7 +86,7 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
                     screen_num, // 显示屏屏号
                     1,// 动态区域编号
                     "Test.txt", // 添加的信息文件名称,
-                    1,// 文字信息是否单行显示；0：多行显示；1：单行显示
+                    0,// 文字信息是否单行显示；0：多行显示；1：单行显示
                     "隶书",// 字体
                     12, // 字体大小
                     0, // 文字信息是否粗体显示；0：正常；1：粗体显示；

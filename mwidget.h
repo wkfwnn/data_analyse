@@ -57,6 +57,9 @@ private:
     Config *mConfig;
     QHash<QString, QString> mHash;
     UpdateScreenThread *mThread;
+    QString mSO2;
+    QString mNOx;
+    QString mYanchen;
 
 };
 
