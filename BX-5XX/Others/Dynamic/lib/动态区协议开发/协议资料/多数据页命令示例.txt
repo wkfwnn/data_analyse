@@ -1,0 +1,45 @@
+ÕÍ’˚√¸¡Ó£∫
+a5 a5 a5 a5 a5 a5 a5 a5 fe ff 00 80 f0 00 54 03 00 00 00 00 16 01 00 00 01 a7 00 00 00 0d 01 00 00 00 00 0a 00 00 01 00 00 00 01 00 00 00 00 10 10 00 00 00 10 00 10 00 00 03 00 4d 00 00 00 00 02 00 08 fa 00 01 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff ff ff ff ef ef 3f 3f ce ce df df ee ee df df ef ef df df ef ef bf bf ef ef 7f 7f ee ee ff ff c6 c6 1f 1f ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 4d 00 00 00 00 02 00 08 fa 00 01 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff ff ff ff cf cf bf bf b7 b7 3f 3f f7 f7 3f 3f ce ce bf bf f5 f5 bf bf f4 f4 1f 1f b7 b7 bf bf cf cf 1f 1f ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 4d 00 00 00 00 02 00 08 fa 00 01 00 00 00 00 00 00 f6 f6 df df f6 f6 df df b6 b6 df df cf cf 3f 3f ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 8e 5b 02 00 5a
+
+√¸¡ÓΩ‚Œˆ£∫
+a5 a5 a5 a5 a5 a5 a5 a5 
+fe ff 
+00 80 
+f0 
+00 
+54 03 
+00 00 00 00 
+16 01 00 00 
+01 a7 
+00 
+00 00 
+0d 01 00 00 
+00 
+00 
+0a 00 
+00 
+01 00 
+00 00 
+01 
+00 00 00 00 
+10 
+10 00 00 00 
+10 00 
+10 00 
+00 
+03 00 
+
+4d 00 00 00 
+00 02 00 08 fa 00 01 00 00 00 00 00 00 
+ff ff ff ff ff ff ff ff ff ff ff ff ef ef 3f 3f ce ce df df ee ee df df ef ef df df ef ef bf bf ef ef 7f 7f ee ee ff ff c6 c6 1f 1f ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
+
+4d 00 00 00 
+00 02 00 08 fa 00 01 00 00 00 00 00 00 
+ff ff ff ff ff ff ff ff ff ff ff ff cf cf bf bf b7 b7 3f 3f f7 f7 3f 3f ce ce bf bf f5 f5 bf bf f4 f4 1f 1f b7 b7 bf bf cf cf 1f 1f ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
+
+4d 00 00 00 
+00 02 00 08 fa 00 01 00 00 00 00 00 00 
+f6 f6 df df f6 f6 df df b6 b6 df df cf cf 3f 3f ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 8e
+ 
+5b 02 
+5a
