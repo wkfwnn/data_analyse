@@ -46,14 +46,14 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
                       2,
                       SCREEN_COMM,
                       SCREEN_BAUD,
-                      p_ip,
+                      "192.168.0.199",
                       ip_port,
                       0,
                       0,
                       "",
                       "",
                       "",
-                      1000,
+                      5005,
                       "",
                       "",
                       "G:\\wkf\\application\\common.txt"
@@ -63,7 +63,7 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
      if(AddScreenDynamicArea)
          tmp = AddScreenDynamicArea(
                      screen_num,                  // 设置屏号 ，与第一步通讯模式中的屏号相同
-                     1,                  // 动态区域编号0~4
+                     0,                  // 动态区域编号0~4
                      RUN_MODE_CYCLE_SHOW, // 运行模式，动态区数据循环显示；
                      10,// 设置超时时间
                      1,// 节目关联标志；1：所有节目都显示该动态区域；0：在指定节目中显示该动态区域，如果动态区域要独立于节目显示，则下一个参数为空。
@@ -84,7 +84,7 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
     if(AddScreenDynamicAreaFile)
         tmp = AddScreenDynamicAreaFile(
                     screen_num, // 显示屏屏号
-                    1,// 动态区域编号
+                    0,// 动态区域编号
                     "Test.txt", // 添加的信息文件名称,
                     0,// 文字信息是否单行显示；0：多行显示；1：单行显示
                     "隶书",// 字体
@@ -101,7 +101,7 @@ void Dll::loadLibrary(int screen_width,int screen_height,int ip_port,QString ip,
     if(AddScreenDynamicAreaText){
        tmp = AddScreenDynamicAreaText(
                    screen_num,
-                   1,// 动态区域编号
+                   0,// 动态区域编号
                    "Test", // 添加的文本信息
                    0,// 文字信息是否单行显示；0：多行显示；1：单行显示；
                    "宋体",// 字体
