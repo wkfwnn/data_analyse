@@ -9,7 +9,6 @@ Begin VB.Form Form1
    ScaleHeight     =   5430
    ScaleMode       =   0  'User
    ScaleWidth      =   4079.605
-   Visible         =   0   'False
    Begin VB.Timer Timer1 
       Interval        =   12
       Left            =   8160
@@ -436,5 +435,5 @@ End Function
 
 Private Sub Timer1_Timer()
 Debug.Print excute()
-End
+Stop
 End Sub

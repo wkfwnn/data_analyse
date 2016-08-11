@@ -14,12 +14,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mwidget.cpp \
-    dll.cpp \
     config.cpp \
     updatescreenthread.cpp
 
 HEADERS  += mwidget.h \
-    dll.h \
     config.h \
     updatescreenthread.h
 

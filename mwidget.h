@@ -40,7 +40,6 @@ private slots:
 #else
     void readData();
 #endif
-    void loadDll();
     void on_treeWidget_clicked(const QModelIndex &index);
     void on_saveButton_clicked(); 
 

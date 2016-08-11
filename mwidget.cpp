@@ -1,6 +1,5 @@
 #include "mwidget.h"
 #include "ui_mwidget.h"
-#include "dll.h"
 #include "qdebug.h"
 #include "QString"
 #include "QHostInfo"
@@ -41,10 +40,6 @@ MWidget::MWidget(QWidget *parent) :
 #endif
 
 
-
-    mDll = new Dll();
-    QTimer::singleShot(1000, this, SLOT(loadDll()));
-
     mConfig = new Config(this);
     ret = mConfig->loadConfigData(&mHash);
     if(ret == 0){
@@ -54,7 +49,7 @@ MWidget::MWidget(QWidget *parent) :
         ui->lineEdit->setText(mHash.value(QString("ip")));
         ui->lineEdit_2->setText(mHash.value(QString("ip_port")));
     }
-    mThread = new UpdateScreenThread(ui->spinBox->value());
+    mThread = new UpdateScreenThread();
 }
 
 MWidget::~MWidget()
@@ -106,7 +101,7 @@ void MWidget::analyse_data(QStringList list)
         out << current_date                                <<"\r\n"
             << QString("         折  算(mg/m3)       标准") << "\r\n"
             << QString("SO2")<<QString("      ") << mSO2 << QString("                < 100\r\n")
-            << QString("NOx")<<QString("      ") << mNOx << QString("              < 100\r\n")
+            << QString("NOx")<<QString("      ") << mNOx << QString("              < 200\r\n")
             << QString("烟尘")<<QString("     ") << mYanchen << QString("                < 10\r\n");
         out.flush();
         file.close();
@@ -223,11 +218,7 @@ void MWidget::readData()
   analyse_data(list);
 }
 
-void MWidget::loadDll()
-{
-    mDll->loadLibrary(ui->spinBox_3->value(),ui->spinBox_2->value(),
-                            ui->lineEdit_2->text().toInt(),ui->lineEdit->text(),ui->spinBox->value());
-}
+
 
 void MWidget::serportInit()
 {
