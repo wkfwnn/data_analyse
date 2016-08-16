@@ -9,7 +9,6 @@ Begin VB.Form Form1
    ScaleHeight     =   5430
    ScaleMode       =   0  'User
    ScaleWidth      =   4079.605
-   Visible         =   0   'False
    Begin VB.Timer Timer1 
       Interval        =   12
       Left            =   8160
@@ -206,142 +205,6 @@ Const SEND_MODE_SAVEFILE = 7
 Const SEND_MODE_SAVEFILE1 = 8
 
 
-Public Sub Command1_Click()
-    Dim nResult As Integer
-    nResult = Initialize()
-    Label2.Caption = CStr(nResult)
-End Sub
-
-Public Sub Command2_Click()
-    Dim nControlType, nScreenNo, nSendMode, nWidth, nHeight, nScreenType, nPixelMode, nBaud, nSocketPort, nStaticIpMode, nServerMode, nServerPort, nResult As Integer
-    Dim pCom, pSocketIP, pBarcode, pNetworkID, pServerIP, pServerAccessUser, pServerAccessPassword, pCommandDataFile As String
-    
-    nControlType = CONTROLLER_BX_5E1
-    nScreenNo = 1
-    nSendMode = SEND_MODE_NETWORK
-    nWidth = 320
-    nHeight = 192
-    nScreenType = 2
-    nPixelMode = 2
-    pCom = ""
-    nBaud = 57600
-    pSocketIP = "192.168.0.199"
-    nSocketPort = 5005
-    nStaticIpMode = 0
-    nServerMode = 0
-    pBarcode = ""
-    pNetworkID = ""
-    pServerIP = ""
-    nServerPort = 5005
-    pServerAccessUser = ""
-    pServerAccessPassword = ""
-    pCommandDataFile = ""
-    
-    nResult = AddScreen_Dynamic(nControlType, nScreenNo, nSendMode, nWidth, nHeight, nScreenType, nPixelMode, pCom, nBaud, pSocketIP, nSocketPort, _
-                                nStaticIpMode, nServerMode, pBarcode, pNetworkID, pServerIP, nServerPort, pServerAccessUser, pServerAccessPassword, pCommandDataFile)
-    
-    Label4.Caption = CStr(nResult)
-    
-End Sub
-
-Public Sub Command3_Click()
-    Dim nScreenNo, nResult As Integer
-    
-    nScreenNo = 1
-    
-    nResult = DeleteScreen_Dynamic(nScreenNo)
-    
-    Label5.Caption = CStr(nResult)
-End Sub
-
-Public Sub Command4_Click()
-    Dim nScreenNo, nDYAreaID, nRunMode, nTimeOut, nAllProRelate, nPlayImmediately, nAreaX, nAreaY, nAreaWidth, nAreaHeight, nAreaFMode, nAreaFLine, nAreaFColor, nAreaFStunt, nAreaFRunSpeed, nAreaFMoveStep, nResult As Integer
-    Dim pProRelateList As String
-    
-    nScreenNo = 1
-    nDYAreaID = 0
-    nRunMode = 4
-    nTimeOut = 10
-    nAllProRelate = 0
-    pProRelateList = ""
-    nPlayImmediately = 0
-    nAreaX = 0
-    nAreaY = 0
-    nAreaWidth = 320
-    nAreaHeight = 192
-    nAreaFMode = 255
-    nAreaFLine = 0
-    nAreaFColor = 255
-    nAreaFStunt = 1
-    nAreaFRunSpeed = 6
-    nAreaFMoveStep = 1
-    
-    nResult = AddScreenDynamicArea(nScreenNo, nDYAreaID, nRunMode, nTimeOut, nAllProRelate, pProRelateList, nPlayImmediately, nAreaX, nAreaY, _
-                                   nAreaWidth, nAreaHeight, nAreaFMode, nAreaFLine, nAreaFColor, nAreaFStunt, nAreaFRunSpeed, nAreaFMoveStep)
-                                   
-    Label7.Caption = CStr(nResult)
-    
-End Sub
-
-    
-Public Sub Command6_Click()
-    Dim nScreenNo, nDYAreaID, nShowSingle, nFontSize, nBold, nFontColor, nStunt, nRunSpeed, nShowTime, nResult As Integer
-    Dim pFileName, pFontName As String
-    
-    nScreenNo = 1
-    nDYAreaID = 0
-    pFileName = "Test.txt"
-    nShowSingle = 0
-    pFontName = "ËÎÌו"
-    nFontSize = 8
-    nBold = 0
-    nFontColor = 65535
-    nStunt = 1
-    nRunSpeed = 2
-    nShowTime = 6
-    
-    nResult = AddScreenDynamicAreaFile(nScreenNo, nDYAreaID, pFileName, nShowSingle, pFontName, nFontSize, nBold, nFontColor, nStunt, nRunSpeed, nShowTime)
-    
-    Label9.Caption = CStr(nResult)
-    
-End Sub
-
-Public Sub Command7_Click()
-    Dim nScreenNo, nDYAreaID, nFileOrd, nResult As Integer
-    
-    nScreenNo = 1
-    nDYAreaID = 0
-    nFileOrd = 0
-    
-    nResult = DeleteScreenDynamicAreaFile(nScreenNo, nDYAreaID, nFileOrd)
-    
-    Label10.Caption = CStr(nResult)
-    
-End Sub
-
-Public Sub Command8_Click()
-    Dim nScreenNo, nDYAreaID, nResult As Integer
-    
-    nScreenNo = 1
-    nDYAreaID = 0
-    
-    nResult = SendDynamicAreaInfoCommand(nScreenNo, nDYAreaID)
-    
-    Label12.Caption = CStr(nResult)
-End Sub
- 
-Public Sub Command9_Click()
-    Dim nScreenNo, nDYAreaID, nResult As Integer
-    Dim pDYAreaIDList As String
-    
-    nScreenNo = 1
-    nDYAreaID = 1
-    pDYAreaIDList = ""
-    
-    nResult = SendDeleteDynamicAreasCommand(nScreenNo, nDYAreaID, pDYAreaIDList)
-    Label13.Caption = CStr(nResult)
-End Sub
-
 Public Function excute()
     Dim nResult As Integer
     nResult = Initialize()
@@ -373,8 +236,6 @@ Public Function excute()
 
     nResult = AddScreen_Dynamic(nControlType, nScreenNo, nSendMode, nWidth, nHeight, nScreenType, nPixelMode, pCom, nBaud, pSocketIP, nSocketPort, _
             nStaticIpMode, nServerMode, pBarcode, pNetworkID, pServerIP, nServerPort, pServerAccessUser, pServerAccessPassword, pCommandDataFile)
-
-    Label4.Caption = CStr(nResult)
     
     Dim nDYAreaID, nRunMode, nTimeOut, nAllProRelate, nPlayImmediately, nAreaX, nAreaY, nAreaWidth, nAreaHeight, nAreaFMode, nAreaFLine, nAreaFColor, nAreaFStunt, nAreaFRunSpeed, nAreaFMoveStep As Integer
     Dim pProRelateList As String
@@ -400,8 +261,6 @@ Public Function excute()
     nResult = AddScreenDynamicArea(nScreenNo, nDYAreaID, nRunMode, nTimeOut, nAllProRelate, pProRelateList, nPlayImmediately, nAreaX, nAreaY, _
                                    nAreaWidth, nAreaHeight, nAreaFMode, nAreaFLine, nAreaFColor, nAreaFStunt, nAreaFRunSpeed, nAreaFMoveStep)
                                    
-    Label7.Caption = CStr(nResult)
-    
     Dim nShowSingle, nFontSize, nBold, nFontColor, nStunt, nRunSpeed, nShowTime As Integer
     Dim pFileName, pFontName As String
     
@@ -419,7 +278,6 @@ Public Function excute()
     
     nResult = AddScreenDynamicAreaFile(nScreenNo, nDYAreaID, pFileName, nShowSingle, pFontName, nFontSize, nBold, nFontColor, nStunt, nRunSpeed, nShowTime)
     
-    Label9.Caption = CStr(nResult)
     
     
     nScreenNo = 1
@@ -429,14 +287,11 @@ Public Function excute()
     
     
     
-    Label12.Caption = CStr(nResult)
-    
-    
    
 
 End Function
 
 Private Sub Timer1_Timer()
 Debug.Print excute()
-End
+Stop
 End Sub

@@ -1,0 +1,7 @@
+D:\工作\dev2nd\materials\BX-5XX\Others\Dynamic\Demo\C#\C#_Demo\C_Sharp_Demo\bin\Release\C_Sharp_Demo.exe
+D:\工作\dev2nd\materials\BX-5XX\Others\Dynamic\Demo\C#\C#_Demo\C_Sharp_Demo\bin\Release\C_Sharp_Demo.pdb
+D:\工作\dev2nd\materials\BX-5XX\Others\Dynamic\Demo\C#\C#_Demo\C_Sharp_Demo\obj\Release\C_Sharp_Demo.Form1.resources
+D:\工作\dev2nd\materials\BX-5XX\Others\Dynamic\Demo\C#\C#_Demo\C_Sharp_Demo\obj\Release\C_Sharp_Demo.Properties.Resources.resources
+D:\工作\dev2nd\materials\BX-5XX\Others\Dynamic\Demo\C#\C#_Demo\C_Sharp_Demo\obj\Release\C_Sharp_Demo.csproj.GenerateResource.Cache
+D:\工作\dev2nd\materials\BX-5XX\Others\Dynamic\Demo\C#\C#_Demo\C_Sharp_Demo\obj\Release\C_Sharp_Demo.exe
+D:\工作\dev2nd\materials\BX-5XX\Others\Dynamic\Demo\C#\C#_Demo\C_Sharp_Demo\obj\Release\C_Sharp_Demo.pdb

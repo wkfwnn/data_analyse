@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DeviceList>
+	<Device>
+	  <DeviceId>Printer001</DeviceId>
+	  <LogLevel>1</LogLevel>
+	  <IpAddress>192.168.2.223</IpAddress>
+	  <IpPort>5005</IpPort>
+	  <ControlType>1106</ControlType>
+	  <Width>64</Width>
+	  <Height>32</Height>
+	  <ColorType>2</ColorType>
+	  <PixelType>1</PixelType>
+	</Device>
+</DeviceList>
