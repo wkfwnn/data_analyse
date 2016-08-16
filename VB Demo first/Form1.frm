@@ -9,6 +9,7 @@ Begin VB.Form Form1
    ScaleHeight     =   5430
    ScaleMode       =   0  'User
    ScaleWidth      =   4079.605
+   Visible         =   0   'False
    Begin VB.Timer Timer1 
       Interval        =   12
       Left            =   8160
@@ -409,7 +410,7 @@ Public Function excute()
     pFileName = "Test.txt"
     nShowSingle = 0
     pFontName = "ËÎÌו"
-    nFontSize = 8
+    nFontSize = 26
     nBold = 0
     nFontColor = 65535
     nStunt = 1
@@ -426,6 +427,8 @@ Public Function excute()
     
     nResult = SendDynamicAreaInfoCommand(nScreenNo, nDYAreaID)
     
+    
+    
     Label12.Caption = CStr(nResult)
     
     
@@ -435,5 +438,5 @@ End Function
 
 Private Sub Timer1_Timer()
 Debug.Print excute()
-Stop
+End
 End Sub

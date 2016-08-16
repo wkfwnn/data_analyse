@@ -92,17 +92,22 @@ void MWidget::analyse_data(QStringList list)
     }
 
     QDateTime current_date_time = QDateTime::currentDateTime();
-    QString current_date = current_date_time.toString("yyyy年MM月dd日  ddd   hh时mm分ss秒");
-    qDebug()<<current_date;
+    QString current_date = current_date_time.toString("yyyy年MM月dd日   ddd    hh时mm分ss秒");
 
     QFile file("Test.txt");
     if (file.open(QFile::WriteOnly)) {
         QTextStream out(&file);
         out << current_date                                <<"\r\n"
-            << QString("         折  算(mg/m3)       标准") << "\r\n"
-            << QString("SO2")<<QString("      ") << mSO2 << QString("                < 100\r\n")
-            << QString("NOx")<<QString("      ") << mNOx << QString("              < 200\r\n")
-            << QString("烟尘")<<QString("     ") << mYanchen << QString("                < 10\r\n");
+            << QString("|-------------|----------------|-------|\r\n")
+            << QString("|             |   折  算(mg/m3)|  标准 |") << "\r\n"
+            << QString("|             |                |       |\r\n")
+            << QString("|-------------|----------------|-------|\r\n")
+            << QString("|         SO2 |")<<QString("    ") << mSO2 << QString("        |  < 100|\r\n")
+            << QString("|-------------|----------------|-------|\r\n")
+            << QString("|         NOx |")<<QString("    ") << mNOx << QString("      |  < 200|\r\n")
+            << QString("|-------------|----------------|------ |\r\n")
+            << QString("|         烟尘|")<<QString("    ") << mYanchen << QString("        |   < 10|\r\n")
+            << QString("|-------------|----------------|-------|\r\n");
         out.flush();
         file.close();
     }
