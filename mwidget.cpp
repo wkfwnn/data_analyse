@@ -93,6 +93,12 @@ void MWidget::analyse_data(QStringList list)
 
     QDateTime current_date_time = QDateTime::currentDateTime();
     QString current_date = current_date_time.toString("yyyy年MM月dd日   ddd    hh时mm分ss秒");
+    if(mSO2.length() == 4)
+        mSO2 = mSO2 + QString(" ");
+    if(mNOx.length() == 4)
+        mNOx = mNOx + QString("  ");
+    if(mNOx.length() == 5)
+        mNOx = mNOx + QString(" ");
 
     QFile file("Test.txt");
     if (file.open(QFile::WriteOnly)) {
@@ -102,7 +108,7 @@ void MWidget::analyse_data(QStringList list)
             << QString("|             |   折  算(mg/m3)|  标准 |") << "\r\n"
             << QString("|             |                |       |\r\n")
             << QString("|-------------|----------------|-------|\r\n")
-            << QString("|         SO2 |")<<QString("    ") << mSO2 << QString("        |  < 100|\r\n")
+            << QString("|         SO2 |")<<QString("    ") << mSO2 << QString("       |  < 100|\r\n")
             << QString("|-------------|----------------|-------|\r\n")
             << QString("|         NOx |")<<QString("    ") << mNOx << QString("      |  < 200|\r\n")
             << QString("|-------------|----------------|------ |\r\n")
