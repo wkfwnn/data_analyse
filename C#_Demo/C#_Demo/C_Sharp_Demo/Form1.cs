@@ -440,8 +440,8 @@ namespace C_Sharp_Demo
 			nDYAreaID = 0;
 			string pFileName = "Test.txt";
 			int nShowSingle = 0;
-			string pFontName = "宋体";
-			int nFontSize = 26;
+			string pFontName = "楷体";
+			int nFontSize = 14;
 			int nBold = 0;
 			int nFontColor = 65535;
 			int nStunt = 1;
