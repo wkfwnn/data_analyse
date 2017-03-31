@@ -19,15 +19,28 @@
 #include "QTimer"
 #include "updatescreenthread.h"
 #include "QDateTime"
-
+#include "databaseserver.h"
+#include "QDialog"
+#include "dialog.h"
+#include <QKeyEvent>
+#include "databasesearch.h"
+#include <QList>
+#include<QStringList>
+#include <QFont>
+#include<QScrollBar>
 
 MWidget::MWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MWidget)
 {
-    int ret = 0;
+    bool ret  = false;
     ui->setupUi(this);
     this->ui_Design();
+    mCurrentDate = QDate::currentDate().toString(QString("yyyyMMdd"));
+    dbServer = new dataBaseServer(this,&ret);
+    dbSearch  = new dataBaseSearch();
+    connect(dbSearch,SIGNAL(sendListData(QList<QStringList>,QList<QStringList>,QList<QStringList>)),
+            this,SLOT(receiveListData(QList<QStringList>,QList<QStringList>,QList<QStringList>)));
 #if (USE_NET)
     this->GetIp();
     mTcpServer = new QTcpServer(this);
@@ -37,8 +50,6 @@ MWidget::MWidget(QWidget *parent) :
     mPort = new QSerialPort(this);
     connect(mPort, &QIODevice::readyRead, this, &MWidget::readData);
     this->serportInit();
-#endif
-
 
     mConfig = new Config(this);
     ret = mConfig->loadConfigData(&mHash);
@@ -50,75 +61,240 @@ MWidget::MWidget(QWidget *parent) :
         ui->lineEdit_2->setText(mHash.value(QString("ip_port")));
     }
     mThread = new UpdateScreenThread();
+#endif
 }
 
 MWidget::~MWidget()
 {
+    delete dbServer;
+    delete mTcpServer;
+    delete setTimeDialog;
     delete ui;
 }
 
 void MWidget::analyse_data(QStringList list)
 {
     QString result;
+    QString display;
     foreach (const QString &str, list) {
-        qDebug()<<str;
-     if (str.contains("MN=")){
-         result = str.mid(str.indexOf('=')+1);
-         qDebug()<<result;
-     }
-     else if(str.contains("DataTime=")){
-         result = str.mid(str.indexOf("DataTime=")+QString("DataTime=").length());
-         qDebug()<<result;
-     }
-     else if(str.contains("01-ZsRtd=")){
-         result = str.left(str.lastIndexOf(','));
-         result = result.mid(result.lastIndexOf('=')+1);
-         ui->pushButton_3->setText(QString("烟尘\n")+ result);
-         mYanchen  = result;
-     }
-     else if(str.contains("02-ZsRtd=")){
-         result = str.left(str.lastIndexOf(','));
-         result = result.mid(result.lastIndexOf('=')+1);
-         qDebug()<<result;
-         ui->so2Button->setText(QString("SO2\n")+result);
-         mSO2  = result;
-     }
-     else if(str.contains("03-ZsRtd=")){
-         result = str.left(str.lastIndexOf(','));
-         result = result.mid(result.lastIndexOf('=')+1);
-         ui->No2Button->setText(QString("NOx\n")+result);
-         mNOx = result;
-     }
+       // qDebug()<<str;
+        if (str.contains("CN=2011")){
+            result = str.mid(str.indexOf('=')+1);
+            mCn = result;
+            qDebug()<< "CN实时数据"<<result;
+        }
+        if (str.contains("CN=2051")){
+            result = str.mid(str.indexOf('=')+1);
+             mCn = result;
+            qDebug()<< "CN分钟数据"<<result;
+        }
+        if (str.contains("CN=2031")){
+            result = str.mid(str.indexOf('=')+1);
+             mCn = result;
+            qDebug()<< "CN分钟数据"<<result;
+        }
+        if (str.contains("CN=2061")){
+            result = str.mid(str.indexOf('=')+1);
+             mCn = result;
+            qDebug()<< "CN小时数据"<<result;
+        }
+     else if (str.contains("MN=")){
+             result = str.mid(str.indexOf('=')+1);
+             qDebug()<<result;
+         }
+         else if(str.contains("DataTime=")){
+             result = str.mid(str.indexOf("DataTime=")+QString("DataTime=").length());
+             mDateTime = result;
+             qDebug()<<result;
+         }
+         else if(str.contains("01-ZsRtd=")){
+             result = str.left(str.lastIndexOf(','));
+             result = result.mid(result.lastIndexOf('=')+1);
+             qDebug()<<QString("折算")+result;
+             display = QString("烟尘\n")+ QString("折算:") + result + QString("\n");
+             mZsYanchen  = result;
+            //zs
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             mYanchen = result;
+             qDebug()<<QString("实测")+result;
+             display = display + QString("实测:") + result;
+             ui->yanchengButton->setText(display);
+         }
+         else if(str.contains("02-ZsRtd=")){
+             result = str.left(str.lastIndexOf(','));
+             result = result.mid(result.lastIndexOf('=')+1);
+             qDebug()<<QString("折算")+result;
+             display = QString("SO2\n")+ QString("折算:") + result + QString("\n");
+             mZsSO2  = result;
+             //zs
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = display + QString("实测:") + result;
+               qDebug()<<QString("实测")+result;
+             mSO2 = result;
+             ui->so2Button->setText(display);
+         }
+         else if(str.contains("03-ZsRtd=")){
+             result = str.left(str.lastIndexOf(','));
+             result = result.mid(result.lastIndexOf('=')+1);
+             display = QString("NOx\n")+ QString("折算:") + result + QString("\n");
+             mZsNOx = result;
+            qDebug()<<QString("折算")+result;
+             //zs
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = display + QString("实测:") + result;
+            mNOx = result;
+            qDebug()<<QString("实测")+result;
+            ui->No2Button->setText(display);
+         }
+         else if(str.contains("S01-Rtd=")){
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = QString("氧含量\n") + result;
+             ui->oxygenButton->setText(display);
+         }
+         else if(str.contains("S02-Rtd=")){
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = QString("流速\n") + result;
+             ui->flowRateButton->setText(display);
+         }
+         else if(str.contains("S03-Rtd=")){
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = QString("温度\n") + result;
+             ui->tempButton->setText(display);
+         }
+         else if(str.contains("S04-Rtd=")){
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = QString("动压\n") + result;
+             ui->dongYaButton->setText(display);
+         }
+         else if(str.contains("S05-Rtd=")){
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = QString("湿度\n") + result;
+             ui->humidityButton->setText(display);
+         }
+         else if(str.contains("S07-Rtd=")){
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = QString("烟道截面积\n") + result;
+             ui->areaButton->setText(display);
+         }
+         else if(str.contains("S08-Rtd=")){
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = QString("压力\n") + result;
+             ui->pressureButton->setText(display);
+         }
+         else if(str.contains("01-ZsAvg=")){
+             result = str.left(str.lastIndexOf(','));
+             result = result.mid(result.lastIndexOf('=')+1);
+             qDebug()<<QString("折算")+result;
+             display = QString("烟尘\n")+ QString("折算:") + result + QString("\n");
+             mZsYanchen  = result;
+            //zs
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             mYanchen = result;
+             qDebug()<<QString("实测")+result;
+             display = display + QString("实测:") + result;
+             ui->yanchengButton->setText(display);
+         }
+         else if(str.contains("02-ZsAvg=")){
+             result = str.left(str.lastIndexOf(','));
+             result = result.mid(result.lastIndexOf('=')+1);
+             qDebug()<<QString("折算")+result;
+             display = QString("SO2\n")+ QString("折算:") + result + QString("\n");
+             mZsSO2  = result;
+             //zs
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = display + QString("实测:") + result;
+               qDebug()<<QString("实测")+result;
+             mSO2 = result;
+             ui->so2Button->setText(display);
+         }
+         else if(str.contains("03-ZsAvg=")){
+             result = str.left(str.lastIndexOf(','));
+             result = result.mid(result.lastIndexOf('=')+1);
+             display = QString("NOx\n")+ QString("折算:") + result + QString("\n");
+             mZsNOx = result;
+            qDebug()<<QString("折算")+result;
+             //zs
+             result = str.left(str.indexOf(','));
+             result = result.mid(result.indexOf('=') +1);
+             display = display + QString("实测:") + result;
+             mNOx = result;
+             qDebug()<<QString("实测")+result;
+             ui->No2Button->setText(display);
+         }
+        else if(str.contains("S01-Avg=")){
+            result = str.left(str.indexOf(','));
+            result = result.mid(result.indexOf('=') +1);
+            display = QString("氧含量\n") + result;
+            mOxygen = result;
+            ui->oxygenButton->setText(display);
+        }
+        else if(str.contains("S02-Avg=")){
+            result = str.left(str.indexOf(','));
+            result = result.mid(result.indexOf('=') +1);
+            display = QString("流速\n") + result;
+            mFlowRate = result;
+            ui->flowRateButton->setText(display);
+        }
+        else if(str.contains("S03-Avg=")){
+            result = str.left(str.indexOf(','));
+            result = result.mid(result.indexOf('=') +1);
+            display = QString("温度\n") + result;
+            mTemp = result;
+            ui->tempButton->setText(display);
+        }
+        else if(str.contains("S04-Avg=")){
+            result = str.left(str.indexOf(','));
+            result = result.mid(result.indexOf('=') +1);
+            display = QString("动压\n") + result;
+            mDongYa = result;
+            ui->dongYaButton->setText(display);
+        }
+        else if(str.contains("S05-Avg=")){
+            result = str.left(str.indexOf(','));
+            result = result.mid(result.indexOf('=') +1);
+            display = QString("湿度\n") + result;
+            mHumidity = result;
+            ui->humidityButton->setText(display);
+        }
+        else if(str.contains("S07-Avg=")){
+            result = str.left(str.indexOf(','));
+            result = result.mid(result.indexOf('=') +1);
+            display = QString("烟道截面积\n") + result;
+            mArea = result;
+            ui->areaButton->setText(display);
+        }
+        else if(str.contains("S08-Avg=")){
+            result = str.left(str.indexOf(','));
+            result = result.mid(result.indexOf('=') +1);
+            display = QString("压力\n") + result;
+            mPresure= result;
+            ui->pressureButton->setText(display);
+        }
     }
+    bool ok = false;
+    qDebug() << "CN" << "   |     " << "DateTime" << "          |        "<< " 烟 尘"  << "|" << "SO2" << "|"
+             <<"NOX" << "|" <<"氧含量" << "|" << "流速" << " | " << "温度" << "|" <<"动压" << "|" << "湿度"
+            <<"|" << "烟道截面积"  << "|" << "压力";
+    mParaList.clear();
+    mParaList <<mCn<< mDateTime << mYanchen << mSO2 << mNOx << mOxygen<<mFlowRate
+                 << mTemp << mDongYa<<mHumidity << mArea << mPresure;
+    dbServer->setList(&mParaList);
+    dbServer->start();
+    qDebug()<< mCn<< mDateTime.toLongLong(&ok) << mYanchen << mSO2 << mNOx << mOxygen<<mFlowRate
+            << mTemp << mDongYa<<mHumidity << mArea << mPresure;
 
-    QDateTime current_date_time = QDateTime::currentDateTime();
-    QString current_date = current_date_time.toString("yyyy年MM月dd日  ddd   hh时mm分");
-    if(mSO2.length() == 4)
-        mSO2 = mSO2 + QString(" ");
-    if(mNOx.length() == 4)
-        mNOx = mNOx + QString("   ");
-    if(mNOx.length() == 5)
-        mNOx = mNOx + QString("  ");
-    if(mNOx.length() == 6)
-        mNOx = mNOx + QString(" ");
-
-    QFile file("Test.txt");
-    if (file.open(QFile::WriteOnly)) {
-        QTextStream out(&file);
-        out << current_date                                <<"\r\n"
-            << QString("|------|-------------|-------|\r\n")
-            << QString("|      |折 算(mg/m3) |  标准 |") << "\r\n"
-            << QString("|------|-------------|-------|\r\n")
-            << QString("|  SO2 |")<<QString("    ") << mSO2 << QString("    | ≤ 100|\r\n")
-            << QString("|------|-------------|-------|\r\n")
-            << QString("|  NOx |")<<QString("   ") << mNOx << QString("   | ≤ 200|\r\n")
-            << QString("|------|-------------|-------|\r\n")
-            << QString("|  烟尘|")<<QString("    ") << mYanchen << QString("     | ≤ 10 |\r\n")
-            << QString("|------|-------------|-------|\r\n");
-        out.flush();
-        file.close();
-    }
-    mThread->start();
 }
 
 void MWidget::ui_Design()
@@ -126,10 +302,66 @@ void MWidget::ui_Design()
     ui->treeWidget->setColumnCount(1);
     ui->treeWidget->setHeaderLabel(tr("导航栏"));
     QTreeWidgetItem *imageItem1 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("实时数据")));
-    QTreeWidgetItem *imageItem2 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("参数设置")));
+    QTreeWidgetItem *imageItem2 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("历史数据查询")));
     QTreeWidgetItem *imageItem3 = new QTreeWidgetItem(ui->treeWidget,QStringList(QString("帮助")));
     this->setFixedSize(1366,768);
     ui->stackedWidget->setCurrentIndex(0);
+    setTimeDialog = new Dialog (this);
+
+    //设置列数为5
+    ui->tableWidget->setColumnCount(10);
+    ui->tableWidget_2->setColumnCount(10);
+    ui->tableWidget_3->setColumnCount(10);
+    QStringList header;
+    header << " 烟 尘" << "SO2" <<"NOX"<<"氧含量" << "流速" << "温度" <<"动压" << "湿度"<< "烟道截面积" << "压力";
+    ui->tableWidget->setHorizontalHeaderLabels(header);
+    ui->tableWidget_2->setHorizontalHeaderLabels(header);
+    ui->tableWidget_3->setHorizontalHeaderLabels(header);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget_2->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget_3->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget_3->setSelectionBehavior(QAbstractItemView::SelectRows);  //整行选中的方式
+    ui->tableWidget_2->setSelectionBehavior(QAbstractItemView::SelectRows);  //整行选中的方式
+    ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);  //整行选中的方式
+
+    QFont font = ui->tableWidget->horizontalHeader()->font();
+    font.setBold(true);
+    ui->tableWidget->horizontalHeader()->setFont(font);
+    ui->tableWidget_2->horizontalHeader()->setFont(font);
+    ui->tableWidget_3->horizontalHeader()->setFont(font);
+
+}
+
+
+
+void MWidget::receiveTimeString(QString date)
+{
+    qDebug()<<"date" << date;
+    dbSearch->setSearchPara(date);
+}
+
+void MWidget::receiveListData(QList<QStringList> list_2061, QList<QStringList> list_2031, QList<QStringList> list_2051)
+{
+    qDebug() <<list_2061.count();
+    ui->tableWidget->setRowCount(list_2051.count());
+    ui->tableWidget_2->setRowCount(list_2061.count());
+    ui->tableWidget_3->setRowCount(list_2031.count());
+
+    for(int i = 0; i < list_2051.count();i ++){
+        for(int j = 0; j< list_2051.at(0).count();j++){
+            ui->tableWidget->setItem(i,j,new QTableWidgetItem(list_2051.at(i).at(j)));
+        }
+    }
+    for(int i = 0; i < list_2061.count();i ++){
+        for(int j = 0; j< list_2061.at(0).count();j++){
+            ui->tableWidget_2->setItem(i,j,new QTableWidgetItem(list_2061.at(i).at(j)));
+        }
+    }
+    for(int i = 0; i < list_2031.count();i ++){
+        for(int j = 0; j< list_2031.at(0).count();j++){
+            ui->tableWidget_3->setItem(i,j,new QTableWidgetItem(list_2031.at(i).at(j)));
+        }
+    }
 
 }
 
@@ -140,42 +372,15 @@ void MWidget::on_treeWidget_clicked(const QModelIndex &index)
      case 0:ui->stackedWidget->setCurrentIndex(0);
         break;
      case 1:ui->stackedWidget->setCurrentIndex(1);
+                ui->tabWidget->setCurrentIndex(0);
+                dbSearch->setSearchPara(mCurrentDate);
+                dbSearch->start();
         break;
      case 2:ui->stackedWidget->setCurrentIndex(2);
        break;
     }
 }
 
-void MWidget::on_saveButton_clicked()
-{
-    QHash<QString,QString>data;
-    data.insert(QString("screen_num"),QString::number(ui->spinBox->value()));
-    data.insert(QString("screen_width"),QString::number(ui->spinBox_3->value()));
-    data.insert(QString("screen_height"),QString::number(ui->spinBox_2->value()));
-    data.insert(QString("ip"),ui->lineEdit->text());
-    data.insert(QString("ip_port"),ui->lineEdit_2->text());
-
-    QFile file("config.dat");
-    if (file.open(QFile::WriteOnly)){
-        QTextStream out(&file);
-        QHashIterator<QString, QString> i(data);
-          while (i.hasNext()) {
-              i.next();
-              out << i.key() << ":" << i.value() << endl;
-          }
-        out.flush();
-        file.close();
-        mHash = data;
-        ui->spinBox->setValue(mHash.value(QString("screen_num")).toInt());
-        ui->spinBox_2->setValue(mHash.value(QString("screen_height")).toInt());
-        ui->spinBox_3->setValue(mHash.value(QString("screen_width")).toInt());
-        ui->lineEdit->setText(mHash.value(QString("ip")));
-        ui->lineEdit_2->setText(mHash.value(QString("ip_port")));
-    }else{
-        QMessageBox::warning(this,QString("警告"),QString("数据未保存！"));
-    }
-
-}
 
 #if (USE_NET)
 
@@ -204,7 +409,7 @@ void MWidget::readMessage()
     QStringList list;
     QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
     Message.prepend(socket->readAll());
-    qDebug()<<Message;
+    //qDebug()<<Message;
     list = Message.split(';');
     analyse_data(list);
 }
@@ -212,7 +417,7 @@ void MWidget::readMessage()
 
 void MWidget::listen()
 {
-    if(mTcpServer->listen(QHostAddress::Any, 8000)){
+    if(mTcpServer->listen(QHostAddress::Any, 80000)){
         qDebug()<<"listen ok";
     }else{
         qDebug()<<"listen error";
@@ -263,3 +468,15 @@ void MWidget::serportInit()
      }
 }
 #endif
+
+void MWidget::on_tabWidget_currentChanged(int index)
+{
+    qDebug() << index;
+}
+
+void MWidget::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_F12 && ui->stackedWidget->currentIndex() == 1){
+        setTimeDialog->show();
+    }
+}

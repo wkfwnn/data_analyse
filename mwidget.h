@@ -3,8 +3,10 @@
 
 #include <QWidget>
 #include "QHash"
+#include <QList>
+#include <QStringList>
 
-#define USE_NET    0
+#define USE_NET    1
 
 
 
@@ -17,6 +19,12 @@ class Dll;
 class Config;
 class QSerialPort;
 class UpdateScreenThread;
+class dataBaseServer;
+class QStringList;
+class Dialog;
+class dataBaseSearch;
+class QSqlDatabase;
+
 class MWidget : public QWidget
 {
     Q_OBJECT
@@ -27,6 +35,9 @@ public:
 private:
     void analyse_data(QStringList list);
     void ui_Design();
+public slots:
+   void  receiveTimeString(QString date);
+   void  receiveListData(QList<QStringList> list_2061, QList<QStringList> list_2031, QList<QStringList> list_2051);
 #if (USE_NET)
     QString GetIp();
 #else
@@ -41,9 +52,10 @@ private slots:
     void readData();
 #endif
     void on_treeWidget_clicked(const QModelIndex &index);
-    void on_saveButton_clicked(); 
 
-
+    void on_tabWidget_currentChanged(int index);
+protected:
+    void keyPressEvent(QKeyEvent *event);
 private:
     Ui::MWidget *ui;
 #if (USE_NET)
@@ -56,10 +68,26 @@ private:
     Config *mConfig;
     QHash<QString, QString> mHash;
     UpdateScreenThread *mThread;
+    dataBaseServer *dbServer;
+    dataBaseSearch *dbSearch;
+    QString mCn;
+    QString mDateTime;
     QString mSO2;
     QString mNOx;
     QString mYanchen;
-
+    QString mZsSO2;
+    QString mZsNOx;
+    QString mZsYanchen;
+    QString mOxygen;
+    QString mFlowRate;
+    QString mTemp;
+    QString mDongYa;
+    QString mHumidity;
+    QString mArea;
+    QString mPresure;
+    QStringList mParaList;
+    QString mCurrentDate;
+    Dialog *setTimeDialog;
 };
 
 #endif // MWIDGET_H
