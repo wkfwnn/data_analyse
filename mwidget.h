@@ -39,7 +39,13 @@ public slots:
    void  receiveTimeString(QString date);
    void  receiveListData(QList<QStringList> list_2061, QList<QStringList> list_2031, QList<QStringList> list_2051);
 #if (USE_NET)
+
+#if defined (Q_OS_LINUX)
     QString getHwPara();
+#elif defined (Q_OS_WIN)
+    QString getVolumeId();
+#endif
+
 #else
     void serportInit();
 #endif

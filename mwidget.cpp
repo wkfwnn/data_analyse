@@ -33,6 +33,10 @@
 #include<QDir>
 #include<QNetworkInterface>
 
+#if defined (Q_OS_WIN)
+#include<windows.h>
+#endif
+
 MWidget::MWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MWidget)
@@ -40,6 +44,10 @@ MWidget::MWidget(QWidget *parent) :
     bool ret  = false;
     ui->setupUi(this);
     this->ui_Design();
+#if defined(Q_OS_WIN)
+    this->getVolumeId();
+#endif
+
     mCurrentDate = QDate::currentDate().toString(QString("yyyyMMdd"));
     dbServer = new dataBaseServer(this,&ret);
     dbSearch  = new dataBaseSearch();
@@ -50,10 +58,7 @@ MWidget::MWidget(QWidget *parent) :
     mTcpServer = new QTcpServer(this);
     connect(mTcpServer,SIGNAL(newConnection()),this,SLOT(newConnectSlot()));
     this->listen();
-#if defined(Q_OS_WIN32)
-    //windows cause problem
-    //this->getHwPara();
-#elif defined(Q_OS_LINUX)
+#if defined(Q_OS_LINUX)
     this->getHwPara();
 #endif
 
@@ -394,17 +399,38 @@ void MWidget::on_treeWidget_clicked(const QModelIndex &index)
 
 
 #if (USE_NET)
-
+#if defined (Q_OS_LINUX)
 QString MWidget::getHwPara()
 {
    QList<QNetworkInterface>list = QNetworkInterface::allInterfaces();//获取所有网络接口信息
-   foreach(QNetworkInterface interface,list)
-    {
-        //便利每一个接口信息
-        qDebug()<<"Device:"<<interface.name();//设备名称
-        qDebug()<<"HardwareAddress:"<< interface.hardwareAddress();//获取硬件地址
-    }
+
+   foreach(QNetworkInterface interface,  list){
+    //    qDebug()<<"Device:"<< interface.name();//设备名称
+      //  qDebug()<<"HardwareAddress:"<< interface.hardwareAddress();//获取硬件地址
+   }
 }
+#elif defined(Q_OS_WIN)
+/*磁盘序列号*/
+QString MWidget::getVolumeId()
+{
+    QString lpRootPathName = "C:\\";
+    LPTSTR lpVolumeNameBuffer=new TCHAR[12];//磁盘卷标
+    DWORD nVolumeNameSize=12;// 卷标的字符串长度
+    DWORD VolumeSerialNumber;//硬盘序列号
+    DWORD MaximumComponentLength;// 最大的文件长度
+    LPTSTR lpFileSystemNameBuffer=new TCHAR[10];// 存储所在盘符的分区类型的长指针变量
+    DWORD nFileSystemNameSize=10;// 分区类型的长指针变量所指向的字符串长度
+    DWORD FileSystemFlags;// 文件系统的一此标志
+
+    GetVolumeInformation((LPTSTR)lpRootPathName.utf16(),
+      lpVolumeNameBuffer, nVolumeNameSize,
+      &VolumeSerialNumber, &MaximumComponentLength,
+      &FileSystemFlags,
+      lpFileSystemNameBuffer, nFileSystemNameSize);
+
+    qDebug() << VolumeSerialNumber;
+}
+#endif
 void MWidget::newConnectSlot()
 {
     QTcpSocket *tcp = mTcpServer->nextPendingConnection();
@@ -437,7 +463,7 @@ void MWidget::listen()
     port = txtInput.readLine();
     qDebug() << "net port:" << port;
     bool ok = false;
-    if(mTcpServer->listen(QHostAddress::Any, port.toInt())){
+    if(mTcpServer->listen(QHostAddress::Any, port.toInt(&ok))){
         qDebug()<<"listen ok";
     }else{
         qDebug()<<"listen error";
