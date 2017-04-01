@@ -18,14 +18,16 @@ SOURCES += main.cpp\
     updatescreenthread.cpp \
     databaseserver.cpp \
     dialog.cpp \
-    databasesearch.cpp
+    databasesearch.cpp \
+    TAesClass.cpp
 
 HEADERS  += mwidget.h \
     config.h \
     updatescreenthread.h \
     databaseserver.h \
     dialog.h \
-    databasesearch.h
+    databasesearch.h \
+    TAesClass.h
 
 FORMS    += mwidget.ui \
     dialog.ui
