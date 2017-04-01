@@ -25,7 +25,6 @@ dataBaseServer::dataBaseServer(QWidget *parent, bool *ret1)
 void dataBaseServer::setList(QStringList *list)
 {
     *mParaList = *list;
-
 }
 
 void dataBaseServer::run()

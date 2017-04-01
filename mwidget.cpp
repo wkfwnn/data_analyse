@@ -28,6 +28,10 @@
 #include<QStringList>
 #include <QFont>
 #include<QScrollBar>
+#include <QFile>
+#include<QTextStream>
+#include<QDir>
+#include<QNetworkInterface>
 
 MWidget::MWidget(QWidget *parent) :
     QWidget(parent),
@@ -42,10 +46,11 @@ MWidget::MWidget(QWidget *parent) :
     connect(dbSearch,SIGNAL(sendListData(QList<QStringList>,QList<QStringList>,QList<QStringList>)),
             this,SLOT(receiveListData(QList<QStringList>,QList<QStringList>,QList<QStringList>)));
 #if (USE_NET)
-    this->GetIp();
+    //
     mTcpServer = new QTcpServer(this);
     connect(mTcpServer,SIGNAL(newConnection()),this,SLOT(newConnectSlot()));
     this->listen();
+    this->getHwPara();
 #else
     mPort = new QSerialPort(this);
     connect(mPort, &QIODevice::readyRead, this, &MWidget::readData);
@@ -307,6 +312,7 @@ void MWidget::ui_Design()
     this->setFixedSize(1366,768);
     ui->stackedWidget->setCurrentIndex(0);
     setTimeDialog = new Dialog (this);
+    connect(setTimeDialog,SIGNAL(sendTimeString(QString)),this,SLOT(receiveTimeString(QString)));
 
     //设置列数为5
     ui->tableWidget->setColumnCount(10);
@@ -336,13 +342,12 @@ void MWidget::ui_Design()
 
 void MWidget::receiveTimeString(QString date)
 {
-    qDebug()<<"date" << date;
     dbSearch->setSearchPara(date);
+    dbSearch->start();
 }
 
 void MWidget::receiveListData(QList<QStringList> list_2061, QList<QStringList> list_2031, QList<QStringList> list_2051)
 {
-    qDebug() <<list_2061.count();
     ui->tableWidget->setRowCount(list_2051.count());
     ui->tableWidget_2->setRowCount(list_2061.count());
     ui->tableWidget_3->setRowCount(list_2031.count());
@@ -384,18 +389,15 @@ void MWidget::on_treeWidget_clicked(const QModelIndex &index)
 
 #if (USE_NET)
 
-QString MWidget::GetIp()
+QString MWidget::getHwPara()
 {
-    QString localHostName = QHostInfo::localHostName();
-    QHostInfo info = QHostInfo::fromName(localHostName);
-    foreach(QHostAddress address,info.addresses())
+   QList<QNetworkInterface>list = QNetworkInterface::allInterfaces();//获取所有网络接口信息
+   foreach(QNetworkInterface interface,list)
     {
-      if(address.protocol()==QAbstractSocket::IPv4Protocol)
-        qDebug()<<address.toString(); //输出IPV4的地址
-        return address.toString();
+        //便利每一个接口信息
+        qDebug()<<"Device:"<<interface.name();//设备名称
+        qDebug()<<"HardwareAddress:"<< interface.hardwareAddress();//获取硬件地址
     }
-    return 0;
-
 }
 void MWidget::newConnectSlot()
 {
@@ -417,7 +419,22 @@ void MWidget::readMessage()
 
 void MWidget::listen()
 {
-    if(mTcpServer->listen(QHostAddress::Any, 80000)){
+#if defined(Q_OS_WIN32)
+    QFile f(QDir::currentPath() + QString("\port.txt"));
+#elif defined(Q_OS_LINUX)
+    QFile f(QDir::currentPath() + QString("/port.txt"));
+ #endif
+    if(!f.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Open failed.";
+        return;
+    }
+    QTextStream txtInput(&f);
+    QString port;
+    port = txtInput.readLine();
+    qDebug() << "net port:" << port;
+    bool ok = false;
+    if(mTcpServer->listen(QHostAddress::Any, port.toInt())){
         qDebug()<<"listen ok";
     }else{
         qDebug()<<"listen error";
@@ -469,14 +486,14 @@ void MWidget::serportInit()
 }
 #endif
 
-void MWidget::on_tabWidget_currentChanged(int index)
-{
-    qDebug() << index;
-}
-
 void MWidget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_F12 && ui->stackedWidget->currentIndex() == 1){
         setTimeDialog->show();
     }
+    if(event->key() == Qt::Key_F5 && ui->stackedWidget->currentIndex() == 1){
+        dbSearch->setSearchPara(mCurrentDate);
+        dbSearch->start();
+    }
+
 }

@@ -39,7 +39,7 @@ public slots:
    void  receiveTimeString(QString date);
    void  receiveListData(QList<QStringList> list_2061, QList<QStringList> list_2031, QList<QStringList> list_2051);
 #if (USE_NET)
-    QString GetIp();
+    QString getHwPara();
 #else
     void serportInit();
 #endif
@@ -52,8 +52,6 @@ private slots:
     void readData();
 #endif
     void on_treeWidget_clicked(const QModelIndex &index);
-
-    void on_tabWidget_currentChanged(int index);
 protected:
     void keyPressEvent(QKeyEvent *event);
 private:
