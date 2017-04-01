@@ -50,7 +50,13 @@ MWidget::MWidget(QWidget *parent) :
     mTcpServer = new QTcpServer(this);
     connect(mTcpServer,SIGNAL(newConnection()),this,SLOT(newConnectSlot()));
     this->listen();
+#if defined(Q_OS_WIN32)
+    //windows cause problem
+    //this->getHwPara();
+#elif defined(Q_OS_LINUX)
     this->getHwPara();
+#endif
+
 #else
     mPort = new QSerialPort(this);
     connect(mPort, &QIODevice::readyRead, this, &MWidget::readData);
@@ -419,11 +425,8 @@ void MWidget::readMessage()
 
 void MWidget::listen()
 {
-#if defined(Q_OS_WIN32)
-    QFile f(QDir::currentPath() + QString("\port.txt"));
-#elif defined(Q_OS_LINUX)
     QFile f(QDir::currentPath() + QString("/port.txt"));
- #endif
+
     if(!f.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "Open failed.";
