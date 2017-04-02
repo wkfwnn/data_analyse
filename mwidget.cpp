@@ -303,13 +303,19 @@ void MWidget::analyse_data(QStringList list)
     qDebug() << "CN" << "   |     " << "DateTime" << "          |        "<< " 烟 尘"  << "|" << "SO2" << "|"
              <<"NOX" << "|" <<"氧含量" << "|" << "流速" << " | " << "温度" << "|" <<"动压" << "|" << "湿度"
             <<"|" << "烟道截面积"  << "|" << "压力";
+    qDebug()<< mCn<< mDateTime.toLongLong(&ok) << mYanchen << mSO2 << mNOx << mOxygen<<mFlowRate
+            << mTemp << mDongYa<<mHumidity << mArea << mPresure;
+    if(mCn == QString("2011")){
+
+        qDebug()<<"实时数据";
+        return;
+    }
+
     mParaList.clear();
     mParaList <<mCn<< mDateTime << mYanchen << mSO2 << mNOx << mOxygen<<mFlowRate
                  << mTemp << mDongYa<<mHumidity << mArea << mPresure;
     dbServer->setList(&mParaList);
     dbServer->start();
-    qDebug()<< mCn<< mDateTime.toLongLong(&ok) << mYanchen << mSO2 << mNOx << mOxygen<<mFlowRate
-            << mTemp << mDongYa<<mHumidity << mArea << mPresure;
 
 }
 
@@ -326,11 +332,11 @@ void MWidget::ui_Design()
     connect(setTimeDialog,SIGNAL(sendTimeString(QString)),this,SLOT(receiveTimeString(QString)));
 
     //设置列数为5
-    ui->tableWidget->setColumnCount(10);
-    ui->tableWidget_2->setColumnCount(10);
-    ui->tableWidget_3->setColumnCount(10);
+    ui->tableWidget->setColumnCount(11);
+    ui->tableWidget_2->setColumnCount(11);
+    ui->tableWidget_3->setColumnCount(11);
     QStringList header;
-    header << " 烟 尘" << "SO2" <<"NOX"<<"氧含量" << "流速" << "温度" <<"动压" << "湿度"<< "烟道截面积" << "压力";
+    header << "时间" << " 烟 尘" << "SO2" <<"NOX"<<"氧含量" << "流速" << "温度" <<"动压" << "湿度"<< "烟道截面积" << "压力";
     ui->tableWidget->setHorizontalHeaderLabels(header);
     ui->tableWidget_2->setHorizontalHeaderLabels(header);
     ui->tableWidget_3->setHorizontalHeaderLabels(header);
@@ -411,7 +417,7 @@ QString MWidget::getHwPara()
 }
 #elif defined(Q_OS_WIN)
 /*磁盘序列号*/
-QString MWidget::getVolumeId()
+DWORD MWidget::getVolumeId()
 {
     QString lpRootPathName = "C:\\";
     LPTSTR lpVolumeNameBuffer=new TCHAR[12];//磁盘卷标
@@ -429,6 +435,7 @@ QString MWidget::getVolumeId()
       lpFileSystemNameBuffer, nFileSystemNameSize);
 
     qDebug() << VolumeSerialNumber;
+    return VolumeSerialNumber;
 }
 #endif
 void MWidget::newConnectSlot()

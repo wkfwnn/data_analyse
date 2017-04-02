@@ -6,6 +6,10 @@
 #include <QList>
 #include <QStringList>
 
+#if defined (Q_OS_WIN)
+#include <windows.h>
+#endif
+
 #define USE_NET    1
 
 
@@ -43,7 +47,7 @@ public slots:
 #if defined (Q_OS_LINUX)
     QString getHwPara();
 #elif defined (Q_OS_WIN)
-    QString getVolumeId();
+    DWORD getVolumeId();
 #endif
 
 #else
