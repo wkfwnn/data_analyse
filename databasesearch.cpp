@@ -46,6 +46,7 @@ void dataBaseSearch::run()
                .arg(tempDate).arg(cn2061));
     while(query.next()){
         for(int i  = 1;i < 12;i ++){
+            if(i == 8 || i == 10){continue;}
             dataList_2061.push_back(query.value(i).toString());
         }
         //qDebug()<<dataList_2061;
@@ -58,7 +59,8 @@ void dataBaseSearch::run()
     query.exec(QString("select * from data_table where  dateTime>=%1 and CN='%2' order by dateTime desc")
                .arg(tempDate).arg(cn2051));
     while(query.next()){
-        for(int i  = 1;i < 12;i ++){
+        for(int i  = 1;i < 12;i++){
+            if(i == 8 || i == 10){continue;}
             dataList_2051.push_back(query.value(i).toString());
         }
         //qDebug()<<dataList_2051;
@@ -72,6 +74,7 @@ void dataBaseSearch::run()
                .arg(tempDate1).arg(tempDate2).arg(cn2031));
     while(query.next()){
         for(int i  = 1;i < 12;i ++){
+            if(i == 8 || i == 10){continue;}
             dataList_2031.push_back(query.value(i).toString());
         }
         //qDebug()<<dataList_2031;

@@ -3,15 +3,21 @@
 #include <QSqlQuery>
 #include <qdebug.h>
 #include <QMessageBox>
+#include<QFile>
 
 dataBaseServer::dataBaseServer(QWidget *parent, bool *ret1)
 {
     bool ret;
+    QFile file("data.db");
+    if(file.exists() == false){
+        isDataBaseOK = false;
+        *ret1 = isDataBaseOK;
+        return;
+    }
     QSqlDatabase *db  = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     db->setDatabaseName("data.db");
     ret = db->open();
     if(ret != true){
-        QMessageBox::warning(parent,QString("警告"),QString("无法连接数据库文件！"));
         isDataBaseOK = false;
        *ret1 = isDataBaseOK;
         return;

@@ -32,6 +32,7 @@
 #include<QTextStream>
 #include<QDir>
 #include<QNetworkInterface>
+#include <QTableView>
 
 #if defined (Q_OS_WIN)
 #include<windows.h>
@@ -50,6 +51,9 @@ MWidget::MWidget(QWidget *parent) :
 
     mCurrentDate = QDate::currentDate().toString(QString("yyyyMMdd"));
     dbServer = new dataBaseServer(this,&ret);
+    if(ret == false){
+       QMessageBox::warning(this,QString("警告"),QString("无法连接数据库文件！"));
+    }
     dbSearch  = new dataBaseSearch();
     connect(dbSearch,SIGNAL(sendListData(QList<QStringList>,QList<QStringList>,QList<QStringList>)),
             this,SLOT(receiveListData(QList<QStringList>,QList<QStringList>,QList<QStringList>)));
@@ -187,7 +191,7 @@ void MWidget::analyse_data(QStringList list)
              result = str.left(str.indexOf(','));
              result = result.mid(result.indexOf('=') +1);
              display = QString("动压\n") + result;
-             ui->dongYaButton->setText(display);
+             //ui->dongYaButton->setText(display);
          }
          else if(str.contains("S05-Rtd=")){
              result = str.left(str.indexOf(','));
@@ -199,7 +203,7 @@ void MWidget::analyse_data(QStringList list)
              result = str.left(str.indexOf(','));
              result = result.mid(result.indexOf('=') +1);
              display = QString("烟道截面积\n") + result;
-             ui->areaButton->setText(display);
+             //ui->areaButton->setText(display);
          }
          else if(str.contains("S08-Rtd=")){
              result = str.left(str.indexOf(','));
@@ -275,7 +279,7 @@ void MWidget::analyse_data(QStringList list)
             result = result.mid(result.indexOf('=') +1);
             display = QString("动压\n") + result;
             mDongYa = result;
-            ui->dongYaButton->setText(display);
+            //ui->dongYaButton->setText(display);
         }
         else if(str.contains("S05-Avg=")){
             result = str.left(str.indexOf(','));
@@ -289,7 +293,7 @@ void MWidget::analyse_data(QStringList list)
             result = result.mid(result.indexOf('=') +1);
             display = QString("烟道截面积\n") + result;
             mArea = result;
-            ui->areaButton->setText(display);
+            //ui->areaButton->setText(display);
         }
         else if(str.contains("S08-Avg=")){
             result = str.left(str.indexOf(','));
@@ -304,7 +308,7 @@ void MWidget::analyse_data(QStringList list)
              <<"NOX" << "|" <<"氧含量" << "|" << "流速" << " | " << "温度" << "|" <<"动压" << "|" << "湿度"
             <<"|" << "烟道截面积"  << "|" << "压力";
     qDebug()<< mCn<< mDateTime.toLongLong(&ok) << mYanchen << mSO2 << mNOx << mOxygen<<mFlowRate
-            << mTemp << mDongYa<<mHumidity << mArea << mPresure;
+            << mTemp << mDongYa<< mHumidity << mArea << mPresure;
     if(mCn == QString("2011")){
 
         qDebug()<<"实时数据";
@@ -312,8 +316,8 @@ void MWidget::analyse_data(QStringList list)
     }
 
     mParaList.clear();
-    mParaList <<mCn<< mDateTime << mYanchen << mSO2 << mNOx << mOxygen<<mFlowRate
-                 << mTemp << mDongYa<<mHumidity << mArea << mPresure;
+    mParaList << mCn<< mDateTime << mYanchen << mSO2 << mNOx << mOxygen<<mFlowRate
+                 << mTemp << mDongYa<< mHumidity << mArea << mPresure;
     dbServer->setList(&mParaList);
     dbServer->start();
 
@@ -332,11 +336,11 @@ void MWidget::ui_Design()
     connect(setTimeDialog,SIGNAL(sendTimeString(QString)),this,SLOT(receiveTimeString(QString)));
 
     //设置列数为5
-    ui->tableWidget->setColumnCount(11);
-    ui->tableWidget_2->setColumnCount(11);
-    ui->tableWidget_3->setColumnCount(11);
+    ui->tableWidget->setColumnCount(9);
+    ui->tableWidget_2->setColumnCount(9);
+    ui->tableWidget_3->setColumnCount(9);
     QStringList header;
-    header << "时间" << " 烟 尘" << "SO2" <<"NOX"<<"氧含量" << "流速" << "温度" <<"动压" << "湿度"<< "烟道截面积" << "压力";
+    header << "时间" << " 烟 尘(mg/m³)" << "SO2(mg/m³)" <<"NOX(mg/m³)"<<"氧含量(%)" << "流速(m³/h)" << "温度(℃)" << "湿度(%)"<< "压力(mpa)";
     ui->tableWidget->setHorizontalHeaderLabels(header);
     ui->tableWidget_2->setHorizontalHeaderLabels(header);
     ui->tableWidget_3->setHorizontalHeaderLabels(header);
@@ -352,6 +356,10 @@ void MWidget::ui_Design()
     ui->tableWidget->horizontalHeader()->setFont(font);
     ui->tableWidget_2->horizontalHeader()->setFont(font);
     ui->tableWidget_3->horizontalHeader()->setFont(font);
+
+    ui->tableWidget->horizontalHeader()->resizeSections(QHeaderView::Stretch);
+    ui->tableWidget_2->horizontalHeader()->resizeSections(QHeaderView::Stretch);
+    ui->tableWidget_3->horizontalHeader()->resizeSections(QHeaderView::Stretch);
 
 }
 
