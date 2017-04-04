@@ -46,7 +46,12 @@ MWidget::MWidget(QWidget *parent) :
     ui->setupUi(this);
     this->ui_Design();
 #if defined(Q_OS_WIN)
-    this->getVolumeId();
+    if(this->getVolumeId() != 0xa63f2d0b){
+        QMessageBox::warning(this,QString("警告"),QString("do not support on this computer"));
+        qDebug()<< "not support this computer";
+        exit(1);
+    }
+
 #endif
 
     mCurrentDate = QDate::currentDate().toString(QString("yyyyMMdd"));
@@ -335,7 +340,7 @@ void MWidget::ui_Design()
     setTimeDialog = new Dialog (this);
     connect(setTimeDialog,SIGNAL(sendTimeString(QString)),this,SLOT(receiveTimeString(QString)));
 
-    //设置列数为5
+    //设置列数为9
     ui->tableWidget->setColumnCount(9);
     ui->tableWidget_2->setColumnCount(9);
     ui->tableWidget_3->setColumnCount(9);
@@ -442,7 +447,7 @@ DWORD MWidget::getVolumeId()
       &FileSystemFlags,
       lpFileSystemNameBuffer, nFileSystemNameSize);
 
-    qDebug() << VolumeSerialNumber;
+    //qDebug() << VolumeSerialNumber;
     return VolumeSerialNumber;
 }
 #endif
@@ -458,7 +463,7 @@ void MWidget::readMessage()
     QStringList list;
     QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
     Message.prepend(socket->readAll());
-    //qDebug()<<Message;
+    qDebug()<<Message;
     list = Message.split(';');
     analyse_data(list);
 }

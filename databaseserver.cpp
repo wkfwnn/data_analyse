@@ -40,7 +40,7 @@ void dataBaseServer::run()
     {
         if( !isDataBaseOK) return;
         QSqlQuery query("data.db");
-#if 0
+#if 1
         qDebug() <<QString("insert into data_table values"
                            " ('%1',%2,'%3','%4','%5','%6','%7','%8','%9','%10','%11');").arg(mParaList->at(0))
                    .arg(mParaList->at(1)).arg(mParaList->at(2)).arg(mParaList->at(3)).arg(mParaList->at(4))
@@ -54,6 +54,7 @@ void dataBaseServer::run()
                    .arg(mParaList->at(9)).arg(mParaList->at(10)).arg(mParaList->at(11)));
             if( !ok ){
                  QMessageBox::warning(mParent,QString("警告"),QString("无法插入数据到相应的数据库！"));
+                 qDebug() << "can not insert data into database";
                  isDataBaseOK = false;
             }
     }
