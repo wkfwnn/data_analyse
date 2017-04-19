@@ -44,7 +44,7 @@ void dataBaseServer::run()
         qDebug() <<QString("insert into data_table values"
                            " ('%1',%2,'%3','%4','%5','%6','%7','%8','%9','%10','%11');").arg(mParaList->at(0))
                    .arg(mParaList->at(1)).arg(mParaList->at(2)).arg(mParaList->at(3)).arg(mParaList->at(4))
-                   .arg(mParaList->at(5)).arg(mParaList->at(6)).arg(olmParaList->at(7)).arg(mParaList->at(8))
+                   .arg(mParaList->at(5)).arg(mParaList->at(6)).arg(mParaList->at(7)).arg(mParaList->at(8))
                    .arg(mParaList->at(9)).arg(mParaList->at(10));
 #endif
             ok = query.exec(QString("insert into data_table values"

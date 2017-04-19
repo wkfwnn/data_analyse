@@ -65,7 +65,7 @@ fileOpen:
     text_stream << message <<endl;
 #endif
     file.flush();
-    file.close();
+    //file.close();
     mutex.unlock();
  }
 
