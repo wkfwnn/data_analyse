@@ -15,7 +15,7 @@
 #include <QMutex>
 #include<QDateTime>
 
-#define MAX_LOG_FILE_SIZE    10485760
+#define MAX_LOG_FILE_SIZE    104857600
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
  {
